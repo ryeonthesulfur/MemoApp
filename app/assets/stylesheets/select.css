@@ -1,0 +1,79 @@
+/* --- 選択モードエリアのスタイル --- */
+
+.select_menu_wrapper {
+    position: absolute; /* 親（パネル）を基準に宙に浮かせる */
+    display: flex;
+    justify-content: flex-start; /* 左寄せにする */
+    padding: 10px 10px; /* 上下10px、左右10pxの余白を追加する */
+}
+
+.checklist {
+    margin-top: 2px;
+    font-size: 24px;
+    color: #127c94;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.checklist:hover {
+    color: #ac3874;
+    transition: color 0.5s ease;
+}
+
+#select_btn {
+    border-radius: 15px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.467);
+    border-color: #ffffff39;
+    cursor: pointer;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+    background: rgba(255, 255, 255, 0.15); /* 半透明の白背景を追加！ */
+    backdrop-filter: blur(10px);           /* 背景を10px分ぼかす！ */
+    -webkit-backdrop-filter: blur(10px);   /* Safari対応 */
+}
+
+#select_btn:hover {
+    background-color: rgba(255, 255, 255, 0.267);
+    border-color: #ffffff98;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+/* --- アクションバーのスタイル --- */
+#action_bar {
+    position: absolute; /* 親（main_content）を基準に宙に浮かせる */
+    display: flex;
+    justify-content: space-around; /* アイコン同士のスペースを均等にする */
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 50px;
+    z-index: 1; /* アクションバーを前面に出す */
+    background-color: rgb(255, 255, 255);
+    align-items: center; /* アイコンを上下中央に揃える */
+    opacity: 0; /* 初期状態では透明にする */
+    transition: all 0.1s ease; /* 透明度の変化に0.1秒かける */
+    visibility: hidden; /* 初期状態では非表示にする */
+}
+
+#action_bar.show {
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
+}
+
+#move_btn, #copy_btn, #delete_btn, #share_btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 35%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+#move_btn:hover, #copy_btn:hover, #delete_btn:hover, #share_btn:hover {
+    background-color: #848488;
+    transition: background-color 0.3s ease;
+    color: white;
+}

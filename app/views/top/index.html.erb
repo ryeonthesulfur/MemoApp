@@ -1,0 +1,63 @@
+<div id="main_panel">
+  <div id="main_panel_inner">
+    <div class="add_menu_wrapper">
+      <button id="add_btn">+</button>
+      <ul id="memo_select" class="memo_select">
+        <li class="new_items">メモ</li>
+        <li class="or_item">or</li>
+        <li class="new_items">フォルダ</li>
+      </ul>
+    </div>
+
+    <div class="select_menu_wrapper">
+      <button id="select_btn">
+        <span class="material-symbols-outlined checklist">pan_tool</span>
+      </button>
+    </div>
+
+    <div class="icon-container">
+      <div class="folder-icon">
+        <span class="material-symbols-outlined color-blue">folder</span>
+        <span class="folder-name">ドキュメント</span>
+      </div>
+      <div class="folder-icon">
+        <span class="material-symbols-outlined color-red">folder</span>
+        <span class="folder-name">写真</span>
+      </div>
+      <div class="folder-icon">
+        <span class="material-symbols-outlined color-green">folder</span>
+        <span class="folder-name">ミュージック</span>
+      </div>
+      <div class="folder-icon">
+        <span class="material-symbols-outlined color-yellow">folder</span>
+        <span class="folder-name">動画</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="action_bar">
+    <span class="material-symbols-outlined" id="move_btn">drive_file_move</span>
+    <span class="material-symbols-outlined" id="copy_btn">content_copy</span>
+    <span class="material-symbols-outlined" id="delete_btn">delete</span>
+    <span class="material-symbols-outlined" id="share_btn">share</span>
+  </div>
+</div>
+
+<div id="memo_panel">
+  <form class="panel-form">
+    <div class="form_group">
+      <ul class="mamo_panel_head">
+        <label for="title" class="title_label">タイトル</label>
+        <li class="back_btn">＜</li>
+      </ul>
+      <input type="text" id="title" name="title" placeholder="タイトル" class="input_form">
+    </div>
+    <div class="form_group_2">
+      <label for="body" class="body_label">本文</label>
+      <textarea id="body" name="body" placeholder="思考する" class="textarea_form"></textarea>
+      <div class="form_group_3">
+        <button type="button" id="save_btn">保存</button>
+      </div>
+    </div>
+  </form>
+</div>

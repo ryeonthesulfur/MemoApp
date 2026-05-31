@@ -1,5 +1,6 @@
+/* Reset some default styles */
 * {
-    box-sizing: border-box;
+    box-sizing: border-box; /* サイト内の「すべての要素(*)」の幅計算ルールを切り替える！ */
 }
 
 body {
@@ -8,6 +9,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Layout styles */
 .content {
     display: flex;
     height: 100vh;
@@ -15,7 +17,7 @@ body {
 }
 
 
-
+/* サイドバー styles */
 .side_bar {
     height: 100%;
     width: 4%;
@@ -24,21 +26,23 @@ body {
     -webkit-backdrop-filter: blur(30px);
     box-shadow: 2px 0 20px rgba(255, 255, 255, 0.3);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 縦向きのFlexboxにする */
 }
 
+/* メインコンテンツの親要素 styles */
 .main-box {
-    flex: 1;
+    flex: 1; /* calcの代わりに、残りのスペースを自動で全部もらう！ */
     width: 100%;
     list-style: none;
     padding: 0;
-    margin-top: 90px;
+    margin-top: 90px; /* はみ出た分は、親要素のdisplay: flex;の機能で、カバー。 */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 50px;
 }
 
+/* メインコンテンツの子要素 styles */
 .item-boxes {
     font-size: 33px;
     font-family: 'Noto Serif JP', serif;
@@ -47,13 +51,14 @@ body {
     color: rgba(215, 215, 215, 0.874);
 }
 
+/* 閉じるボタン styles */
 .item-close {
     font-size: 33px;
     font-family: 'Noto Serif JP', serif;
     cursor: pointer;
     transition: color 1s ease;
     color: rgba(215, 215, 215, 0.874);
-    margin-top: auto;       /*余った縦スペースを全部自分の上のmarginにする*/
+    margin-top: auto; /* 余った縦スペースを全部自分の上のmarginにする */
     margin-bottom: 30px;
 }
 
@@ -69,6 +74,7 @@ body {
     transition: color 0.5s ease;
 }
 
+/* メインコンテンツ styles */
 .main_content {
     height: 100%;
     flex: 1;
@@ -76,6 +82,7 @@ body {
     position: relative;
 }
 
+/* 画面右下のタイトル表記 styles */
 .main_title {
     position: absolute;
     right: 60px;
@@ -83,8 +90,18 @@ body {
     font-size: 65px;
     font-family: 'Noto Serif JP', serif;
     color: rgba(255, 255, 255, 0.627);
+    transition: all 2s ease;
+    opacity: 1; /* 初期状態では表示する */
+    visibility: visible;
 }
 
+.main_title.show {
+    opacity: 0; /* 透明度を0%にしてフェードアウト */
+    visibility: hidden;
+    transition: all 0.6s ease;
+}
+
+/* ヘッダー styles */
 .right_header {
     height: 10%;
     width: 100%;
@@ -101,20 +118,23 @@ body {
     list-style: none;
 }
 
+/* ヘッダータイトル styles */
 #header_title {
-    font-size: 50px;
+    font-size: 60px;
     font-family: 'Noto Serif JP', serif;
     color: rgba(235, 235, 235, 0.931);
-    padding-left: 20px;
+    padding-left: 60px;
+    padding-top: 15px;
     margin: 0;
-    opacity: 0;
-    transition: opacity 2s ease;
+    opacity: 0; /* 透明度を0%にする */
+    transition: opacity 2s ease; /* 透明度の変化に2秒かける */
 }
 
 #header_title.show {
-    opacity: 1;
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
 }
 
+/* 外部リンクアイコン styles */
 .header_links {
     display: flex;
     list-style: none;
@@ -137,39 +157,40 @@ body {
     opacity: 1;
 }
 
+/* メインパネル styles */
 #main_panel {
     position: absolute;
     top: 14%;
-    left: 2%;
+    left: 2%; /* 宙に浮いている要素は left で座標を指定します！ */
     width: 30%;
     height: 80%;
     border-radius: 22px;
     background-color: #c9d1c8;
-    opacity: 0;
-    transition: all 0.6s ease;
-    visibility: hidden;
-    overflow-y: hidden;
+    opacity: 0; /* 初期状態では透明にする */
+    transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
+    visibility: hidden; /* 初期状態では非表示にする */
+    overflow-y: hidden; /* はみ出た時のスクロールバーは消す！ */
 }
 
 #main_panel.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
 #main_panel_inner {
     height: 100%;
-    overflow-y: auto;
-    padding-bottom: 60px;
+    overflow-y: auto; /* はみ出た時「だけ」空気を読んでスクロールバーを出す、王道の設定に変更！ */
+    padding-bottom: 60px; /* スクロールバーの分だけ下に余白を作る！ */
 }
 
 .add_menu_wrapper {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    position: absolute; /* 親（パネル）を基準に宙に浮かせる */
+    top: 10px;          /* 上から10pxの位置 */
+    right: 10px;        /* 右から10pxの位置にピタッとくっつける！ */
     display: flex;
     flex-direction: row-reverse;
     padding: 0;
-    align-items: center;
+    align-items: center; /* アイコンを上下中央に揃える */
 }
 
 #add_btn {
@@ -191,21 +212,24 @@ body {
     color: black;
 }
 
+/* スクロールバー全体の幅 */
 ::-webkit-scrollbar {
     width: 6px;
 }
 
+/* レール部分（背景） */
 ::-webkit-scrollbar-track {
     background: rgba(205, 205, 205, 0.754);
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 60px; /* 上から60pxの位置からスタート */
+    margin-bottom: 60px; /* 下から60pxの位置で終わるようにする */
     border-radius: 10px;
 }
 
+/* つまむ部分（バー本体） */
 ::-webkit-scrollbar-thumb {
     background-color: #aaa;
     border-radius: 10px;
-    min-height: 60px;
+    min-height: 60px; /* バーの最短の長さ */
 }
 
 #memo_select {
@@ -215,18 +239,18 @@ body {
     display: flex;
     align-items: center;
     margin-right: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15); /* 半透明の白背景を追加！ */
+    backdrop-filter: blur(10px);           /* 背景を10px分ぼかす！ */
+    -webkit-backdrop-filter: blur(10px);   /* Safari対応 */
+    border-radius: 20px; /* 角を丸くする */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease;
 }
 
 #memo_select.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
 .memo_list {
@@ -234,6 +258,7 @@ body {
     margin-right: 10px;
 }
 
+/* --- メモ選択エリアのスタイル --- */
 .new_items {
     text-align: center;
     font-size: 15px;
@@ -241,14 +266,14 @@ body {
     color: rgb(78, 78, 78);
     cursor: pointer;
     margin-right: 0px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.6s ease;
+    opacity: 0; /* 初期状態では透明にする */
+    visibility: hidden; /* 初期状態では非表示にする */
+    transition: all 0.6s ease; /* 透明度の変化に0.6秒かける */
 }
 
 .new_items.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
 .or_item {
@@ -257,67 +282,71 @@ body {
     color: rgb(78, 78, 78);
     margin-right: 10px;
     margin-left: 10px;
-    opacity: 0;
-    transition: all 1.0s ease;
+    opacity: 0; /* 初期状態では透明にする */
+    transition: all 1.0s ease; /* 透明度の変化に1秒かける */
 }
 
 .or_item.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
+/* --- アイコン表示エリアのスタイル --- */
 .icon-container {
     margin-top: 70px;
-    display: grid;
-    flex-wrap: wrap;
-    grid-template-columns: repeat(4, 80px);
-    justify-content: center;
-    gap: 20px;
+    display: grid; /* アイコンをグリッドレイアウトにする。 */
+    flex-wrap: wrap; /* 画面の端で自動的に折り返す！ */
+    grid-template-columns: repeat(4, 80px); /* 4列のグリッドレイアウトにする */
+    justify-content: center; /* アイコンを中央揃えにする */
+    gap: 20px; /* アイコン同士の隙間を空ける */
 }
 
 .folder-icon {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 80px;
+    flex-direction: column; /* アイコンと名前を縦に並べる */
+    align-items: center; /* 水平方向の中央に揃える */
+    width: 80px; /* アイコン1つ分の幅を固定する */
     cursor: pointer;
-    position: relative;
+    position: relative; /* チェックボックス(select-checkbox)をアイコンの中に絶対配置するために、親要素をrelativeにする！ */
 }
 
 .folder-icon .material-symbols-outlined {
-    font-size: 60px;
+    font-size: 60px; /* アイコンの大きさを指定 */
     color: #5f6368;
 }
 
+/* --- 個別のアイコンの色設定 --- */
 .folder-icon .color-blue {
-    color: #4285f4;
+    color: #4285f4; /* 青 */
 }
 
 .folder-icon .color-red {
-    color: #ea4335;
+    color: #ea4335; /* 赤 */
 }
 
 .folder-icon .color-green {
-    color: #34a853;
+    color: #34a853; /* 緑 */
 }
 
 .folder-icon .color-yellow {
-    color: #fbbc04;
+    color: #fbbc04; /* 黄色 */
 }
 
+/* --- アイコンの選択状態のスタイル --- */
 .folder-icon.selecting {
-    background-color: rgba(167, 167, 167, 0.096);
+    background-color: rgba(167, 167, 167, 0.096); /* 選択中っぽい青い背景 */
     border-radius: 10px;
     transition: background-color 0.3s ease;
     cursor: pointer;
 }
 
 .select-checkbox {
-    position: absolute;
+    position: absolute; /* 親（アイコン）を基準に宙に浮かせる */
     top: 4px;
     left: 4px;
 }
 
+/* --- フォルダ名表示エリアのスタイル --- */
 .folder-name {
     margin-top: 5px;
     margin-bottom: 5px;
@@ -326,13 +355,14 @@ body {
     font-family: 'Noto Serif JP', serif;
 }
 
+/* --- フォルダ名入力中のスタイル --- */
 .folder-name-input {
     margin-top: 5px;
     font-size: 12px;
     font-family: 'Noto Serif JP', serif;
     text-align: center;
     width: 100%;
-    border: 1px solid #4285f4;
+    border: 1px solid #4285f4; /* 選択中っぽい青い枠線 */
     border-radius: 3px;
-    outline: none;
+    outline: none; /* デフォルトの太い枠線を消す */
 }
