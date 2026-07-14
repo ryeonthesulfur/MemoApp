@@ -16,6 +16,7 @@ document.addEventListener('turbo:load', function () {
 save_btn.addEventListener('click', function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
+    // ①②: JSのオブジェクトをJSON文字列に変換して、POSTリクエストとして/memosに送信する
     fetch('/memos', {
       method: 'POST',
       headers: {
@@ -29,7 +30,9 @@ save_btn.addEventListener('click', function () {
         },
       }),
     })
-      .then(response => response.json())
+      // ③〜⑦: この間にRailsが routes.rb → MemosController#create → Memoモデルの順で処理し、
+      // 保存した内容をJSONに変換して返してくる(サーバー側なのでここには出てこない)
+      .then(response => response.json()) // ⑧: 返ってきたJSON文字列をJSオブジェクトに戻す
       .then(savedMemo => {
         // 保存できたら、パネルを一覧側に戻す
         memo_panel.classList.remove('show');
