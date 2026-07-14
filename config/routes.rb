@@ -1,3 +1,4 @@
 Rails.application.routes.draw do
- root 'top#index'
+ resources :memos, only: [ :create ]
+ root "top#index"
 end
