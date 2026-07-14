@@ -32,6 +32,12 @@
         <span class="material-symbols-outlined color-yellow">folder</span>
         <span class="folder-name">動画</span>
       </div>
+      <% @memos.each do |memo| %>
+      <div class="folder-icon">
+        <span class="material-symbols-outlined color-blue">description</span>
+        <span class="folder-name"><%= memo.title.presence || "名称未設定メモ" %></span>
+      </div>
+      <% end %>
     </div>
   </div>
 
