@@ -13,6 +13,7 @@ export function getRefs() {
     new_items: document.querySelectorAll('.new_items'),
     or_item: document.querySelector('.or_item'),
     back_btn: document.querySelector('.back_btn'),
-    main_title: document.querySelector('.main_title')
+    main_title: document.querySelector('.main_title'),
+    show_panel: document.getElementById('main_show_panel')
   };
 }

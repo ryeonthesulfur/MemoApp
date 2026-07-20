@@ -14,14 +14,14 @@ document.addEventListener('turbo:load', function () {
 
   // 保存ボタンを押したら、Railsにメモを保存しに行く
 save_btn.addEventListener('click', function () {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;  // 身分証明書となるcsrfトークンを「application.html.erb」から発行する。
 
     // ①②: JSのオブジェクトをJSON文字列に変換して、POSTリクエストとして/memosに送信する
     fetch('/memos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfToken,  // 身分証明書をここで貼る
       },
       body: JSON.stringify({
         memo: {

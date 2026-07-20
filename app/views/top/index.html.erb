@@ -33,7 +33,7 @@
         <span class="folder-name">動画</span>
       </div>
       <% @memos.each do |memo| %>
-      <div class="folder-icon">
+      <div class="folder-icon" data-memo-id="<%= memo.id %>">
         <span class="material-symbols-outlined color-blue">description</span>
         <span class="folder-name"><%= memo.title.presence || "名称未設定メモ" %></span>
       </div>
@@ -66,4 +66,21 @@
       </div>
     </div>
   </form>
+</div>
+
+
+<div id="main_show_panel">
+  <div class="show_panel">
+    <div class="buttons_header">
+      <div class="date"></div>
+      <div class="button_group">
+        <div class="edit_button">編集</div>
+        <div class="close_button">閉じる</div>
+      </div>
+    </div>
+    <div class="show_content">
+      <div class="show_title"></div>
+      <div class="body"></div>
+    </div>
+  </div>
 </div>
