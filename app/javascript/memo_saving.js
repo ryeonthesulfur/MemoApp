@@ -41,6 +41,7 @@ save_btn.addEventListener('click', function () {
         // 保存されたメモのアイコンをその場で追加する
         const new_memo = document.createElement('div');
         new_memo.classList.add('folder-icon');
+        new_memo.dataset.memoId = savedMemo.id;
         new_memo.innerHTML = `
           <span class="material-symbols-outlined color-blue">description</span>
           <span class="folder-name">${savedMemo.title || '無題'}</span>
