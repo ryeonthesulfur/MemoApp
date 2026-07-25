@@ -76,40 +76,6 @@ document.addEventListener('turbo:load', function () {
     panel.classList.add('show');
   });
 
-  // フォルダアイコンの色をランダムで選ぶための候補
-  const colors = ['color-blue', 'color-red', 'color-green', 'color-yellow'];
-
-  // 「フォルダ」を選んだら、新しいフォルダのアイコンをその場で作る(まだ保存はしていない、見た目だけ)
-  folder_btn.addEventListener('click', function () {
-    const new_folder = document.createElement('div');
-    new_folder.classList.add('folder-icon');
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    new_folder.innerHTML = `
-      <span class="material-symbols-outlined ${randomColor}">folder</span>
-      <input type="text" class="folder-name-input" value="新規フォルダ">
-    `;
-    window.icon_container.appendChild(new_folder);
-    closeAddMenu();
-
-    // 作った直後は名前を入力できる状態にしておく
-    const nameInput = new_folder.querySelector('.folder-name-input');
-    nameInput.focus();
-    nameInput.select();
-
-    // 入力欄からフォーカスが外れる/Enterで、入力欄を通常の文字表示に戻す
-    function finishEditing() {
-      const newName = nameInput.value || '新規フォルダ';
-      const nameSpan = document.createElement('span');
-      nameSpan.classList.add('folder-name');
-      nameSpan.textContent = newName;
-      if (nameInput.parentNode) new_folder.replaceChild(nameSpan, nameInput);
-    }
-
-    nameInput.addEventListener('blur', finishEditing);
-    nameInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') finishEditing();
-    });
-  });
 
   // アイコン置き場全体のクリックを1箇所で監視(イベント委譲)
   window.icon_container.addEventListener('click', function (e) {
