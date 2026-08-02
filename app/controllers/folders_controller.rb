@@ -9,6 +9,11 @@ class FoldersController < ApplicationController
     end
   end
 
+  def show
+    @folder = Folder.find(params[:id])
+    render json: @folder.as_json(include: [ :children ])
+  end
+
   private
 
   def folder_params
