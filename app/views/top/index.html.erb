@@ -16,22 +16,14 @@
     </div>
 
     <div class="icon-container" id="icon_container">
-      <div class="folder-icon">
+
+      <% @folders.each do |folder| %>
+      <div class="folder-icon" data-folder-id="<%= folder.id =%>">
         <span class="material-symbols-outlined color-blue">folder</span>
-        <span class="folder-name">ドキュメント</span>
+        <span class="folder-name"><%= folder.name.presence || "フォルダ名未設定" %></span>
       </div>
-      <div class="folder-icon">
-        <span class="material-symbols-outlined color-red">folder</span>
-        <span class="folder-name">写真</span>
-      </div>
-      <div class="folder-icon">
-        <span class="material-symbols-outlined color-green">folder</span>
-        <span class="folder-name">ミュージック</span>
-      </div>
-      <div class="folder-icon">
-        <span class="material-symbols-outlined color-yellow">folder</span>
-        <span class="folder-name">動画</span>
-      </div>
+      <% end %>
+
       <% @memos.each do |memo| %>
       <div class="folder-icon" data-memo-id="<%= memo.id %>">
         <span class="material-symbols-outlined color-blue">description</span>
@@ -81,6 +73,18 @@
     <div class="show_content">
       <div class="show_title"></div>
       <div class="body"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="folder_show_panel">
+  <div class="show_panel">
+    <div class="buttons_header">
+      <div class="folder_name_label"></div>
+      <div class="close_button">閉じる</div>
+    </div>
+    <div class="folder_show_content" id="folder_show_content">
     </div>
   </div>
 </div>
