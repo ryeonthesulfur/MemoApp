@@ -193,7 +193,7 @@ body {
     align-items: center; /* アイコンを上下中央に揃える */
 }
 
-#add_btn {
+#add_btn, #folder_add_btn {
     width: 35px;
     height: 35px;
     border-radius: 50%;
@@ -205,7 +205,7 @@ body {
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-#add_btn:hover {
+#add_btn:hover, #folder_add_btn:hover {
     background-color: #9f9fa5;
     border-color: #b0b0b0;
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -232,7 +232,7 @@ body {
     min-height: 60px; /* バーの最短の長さ */
 }
 
-#memo_select {
+#memo_select, #folder_memo_select {
     list-style: none;
     padding: 5px 10px;
     margin: 0;
@@ -248,7 +248,7 @@ body {
     transition: opacity 0.4s ease;
 }
 
-#memo_select.show {
+#memo_select.show, #folder_memo_select.show {
     opacity: 1; /* 透明度を100%にして完全に見えるようにする */
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
