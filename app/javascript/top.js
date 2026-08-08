@@ -18,7 +18,8 @@ document.addEventListener('turbo:load', function () {
     back_btn,      // メモ編集パネルの「＜」戻るボタン
     main_title,    // MIND PALACE的な大きいタイトル文字
     icon_container, // アイコンを並べてる場所(.icon-container)
-    show_panel
+    show_panel,
+    folder_panel
   } = getRefs();
 
   // new_items[0] が「メモ」ボタン、new_items[1] が「フォルダ」ボタン
@@ -44,6 +45,7 @@ document.addEventListener('turbo:load', function () {
       header_title.classList.remove('show');
       main_title.classList.remove('show');
       show_panel.classList.remove('show');
+      folder_panel.classList.remove('show');
       closeAddMenu();
       window.action_bar.classList.remove('show');
       if (window.isSelecting) window.turnOffSelectMode(); // 選択モード中なら解除

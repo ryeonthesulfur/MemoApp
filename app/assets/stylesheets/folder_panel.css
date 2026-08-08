@@ -1,0 +1,27 @@
+#folder_show_panel {
+    position: absolute;
+    width: 30%;
+    height: 80%;
+    left: 34%;
+    top: 14%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s ease;
+}
+
+#folder_show_panel.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.folder_buttons_header {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 16px 20px;
+    font-family: 'Noto Serif JP', serif;
+}
+
+.folder_name_label {
+
+}
