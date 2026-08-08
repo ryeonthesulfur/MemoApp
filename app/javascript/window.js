@@ -10,10 +10,11 @@ export function getRefs() {
     header_title: document.getElementById('header_title'),
     memo_select: document.getElementById('memo_select'),
     add_btn: document.getElementById('add_btn'),
-    new_items: document.querySelectorAll('.new_items'),
+    new_items: document.querySelectorAll('#main_panel .new_items'),
     or_item: document.querySelector('.or_item'),
     back_btn: document.querySelector('.back_btn'),
     main_title: document.querySelector('.main_title'),
-    show_panel: document.getElementById('main_show_panel')
+    show_panel: document.getElementById('main_show_panel'),
+    folder_panel: document.getElementById('folder_show_panel')
   };
 }
