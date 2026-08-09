@@ -15,6 +15,7 @@ export function getRefs() {
     back_btn: document.querySelector('.back_btn'),
     main_title: document.querySelector('.main_title'),
     show_panel: document.getElementById('main_show_panel'),
-    folder_panel: document.getElementById('folder_columns_container')
+    folder_panel: document.getElementById('folder_columns_container'),
+    bgm: document.getElementById('bgm')
   };
 }
