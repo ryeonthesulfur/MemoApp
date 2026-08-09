@@ -22,6 +22,11 @@
     font-family: 'Noto Serif JP', serif;
 }
 
-.folder_name_label {
-
+.folder_show_content {
+    margin-top: 7px;
+    display: grid; /* アイコンをグリッドレイアウトにする。 */
+    flex-wrap: wrap; /* 画面の端で自動的に折り返す！ */
+    grid-template-columns: repeat(4, 80px); /* 4列のグリッドレイアウトにする */
+    justify-content: center; /* アイコンを中央揃えにする */
+    gap: 20px; /* アイコン同士の隙間を空ける */
 }
