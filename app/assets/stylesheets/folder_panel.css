@@ -1,32 +1,63 @@
-#folder_show_panel {
-    position: absolute;
-    width: 30%;
-    height: 80%;
-    left: 34%;
-    top: 14%;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.6s ease;
+/* フォルダの中身を表示する「1枚のカラム(パネル)」自体。folder_columns.js がフォルダアイコンをクリックするたびに1つ生成し、#folder_columns_container の中に追加していく */
+.folder_column {
+    flex: 0 0 30%; /* #folder_columns_container の中で、1カラムの幅を「伸び縮みしない30%」に固定する */
+    height: 100%; /* 親要素(#folder_columns_container)の高さいっぱいに広げる */
 }
 
-#folder_show_panel.show {
-    opacity: 1;
-    visibility: visible;
-}
-
+/* カラム上部のヘッダー部分。閉じるボタン・開いているフォルダの名前・追加ボタンが横一列に並ぶ */
 .folder_buttons_header {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    padding: 16px 20px;
+    display: flex; /* 閉じるボタン・フォルダ名・追加ボタンを横一列に並べる */
+    align-items: center; /* それぞれの高さがバラバラでも縦方向の中央に揃える */
+    padding: 0.83vw 1.04vw; /* 16px 20px */
     font-family: 'Noto Serif JP', serif;
+    position: relative; /* 子要素の絶対配置の基準点にする */
 }
 
+/* ヘッダー内で、開いているフォルダの名前を表示する部分 */
+.folder_name_label {
+    flex: 1; /* 残りのスペースを全部占有し、ボタン類を右端に押し出す */
+    overflow: hidden; /* 長いフォルダ名がこの幅を超えたらはみ出た部分を隠す */
+    white-space: nowrap; /* 長いフォルダ名でも折り返さず1行のままにする */
+    text-overflow: ellipsis; /* 隠れて見えなくなった部分を「…」で表現する */
+}
+
+/* フォルダパネル内の閉じるボタンと追加ボタンラッパーの共通スタイル */
+/* カラムそのものを閉じる(column.remove()する)ための「閉じる」ボタン */
+.close_button {
+    flex-shrink: 0; /* .folder_name_label が伸びても、このボタンだけは幅を縮められないようにする */
+}
+
+/* フォルダパネル内の追加ボタンラッパー */
+/* 「+」ボタンと、そこから開くメモ/フォルダ追加メニューをまとめた部分 */
+.add_menu_wrapper {
+    /* top.cssのabsoluteを上書きせず、flexboxのレイアウトに戻す */
+    position: static;
+    display: flex; /* 追加ボタンとメモ/フォルダ選択メニューを横に並べる */
+    align-items: center; /* 縦方向の中央に揃える */
+    margin-left: auto; /* フォルダ名との間にスペースを空ける */
+    padding-right: 0.52vw; /* 10px (閉じるボタンとの間のスペース) */
+}
+
+/* カラムの中身。開いたフォルダの「子フォルダ」のアイコンが並ぶエリア(folder.children を元にJSが生成する) */
 .folder_show_content {
-    margin-top: 7px;
-    display: grid; /* アイコンをグリッドレイアウトにする。 */
-    flex-wrap: wrap; /* 画面の端で自動的に折り返す！ */
-    grid-template-columns: repeat(4, 80px); /* 4列のグリッドレイアウトにする */
-    justify-content: center; /* アイコンを中央揃えにする */
-    gap: 20px; /* アイコン同士の隙間を空ける */
+    margin-top: 0.36vw; /* 7px。ヘッダーとの間に少しだけ隙間を作る */
+    display: grid; /* 子フォルダのアイコンをグリッドレイアウトにする */
+    flex-wrap: wrap; /* 画面の端で自動的に折り返す */
+    grid-template-columns: repeat(4, 4.17vw); /* 4列のグリッドレイアウトにする(80px) */
+    justify-content: center; /* グリッド全体に余りスペースがある時、中央に寄せる */
+    gap: 1.04vw; /* 20px。アイコン同士の間隔 */
+    padding: 0 1.04vw; /* 左右に固定の余白を作る。justify-contentは「余りスペース」がないと効かないため、paddingで確実に隙間を確保している */
+}
+
+
+/* 全てのフォルダカラムをまとめて並べる、一番外側の入れ物。index.html.erb に元から空のdivとして存在し、folder_columns.js がクリックされるたびに .folder_column をここへ追加していく */
+#folder_columns_container {
+    position: absolute; /* main_panelの右隣に浮かせて配置するための基準にする */
+    left: 34%; /* main_panel(左2%〜幅30%)の右にくっつく位置から開始する */
+    top: 14%; /* main_panelと同じ高さから始める */
+    right: 2%; /* 画面右端との間に余白を作り、ここが横スクロールの右境界になる */
+    height: 80%; /* main_panelと同じ高さにする */
+    display: flex; /* 複数のフォルダカラムを横一列に並べる */
+    gap: 0.83vw; /* 16px。カラム同士の間隔 */
+    overflow-x: auto; /* カラムが増えて右端(right指定)を超えたら、画面内で横スクロールできるようにする */
 }

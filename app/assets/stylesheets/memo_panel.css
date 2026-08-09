@@ -1,17 +1,19 @@
+/* メモの新規作成/編集フォームを表示するパネル本体。top.cssの#main_panelと同じ「右隣に浮かせる」仕組みを使っている */
 #memo_panel {
     position: absolute; /* 親（main_content）を基準に宙に浮かせる */
-    top: 14%;
+    top: 14%; /* 上端からの距離 */
     left: 2%; /* 宙に浮いている要素は left で座標を指定します！ */
-    width: 80%;
-    height: 80%;
+    width: 80%; /* パネルの横幅 */
+    height: 80%; /* パネルの縦幅 */
     opacity: 0; /* 初期状態では透明にする */
     transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
     visibility: hidden; /* 初期状態では非表示にする */
     overflow-y: auto; /* はみ出た時「だけ」空気を読んでスクロールバーを出す、王道の設定に変更！ */
-    border-radius: 22px;
-    background-color: #c9d1c8eb;
+    border-radius: 1.15vw; /* 22px。角を丸める */
+    background-color: #c9d1c8eb; /* パネルの背景色 */
 }
 
+/* JSが「開いた」時に付けるクラス。opacity/visibilityを反転させて実際に見える状態にする */
 #memo_panel.show {
     opacity: 1; /* 透明度を100%にして完全に見えるようにする */
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
@@ -19,107 +21,118 @@
 
 /* --- フォームのスタイル --- */
 
+/* メモのタイトル・本文の入力欄をまとめる<form>本体 */
 .panel-form {
-    display: flex;
-    flex-direction: column;
+    display: flex; /* 中身(タイトル欄と本文欄)を縦に並べる土台 */
+    flex-direction: column; /* 縦並びにする */
     height: 100%; /* パネルの高さいっぱいにフォームを広げる */
 }
 
+/* タイトル欄(ラベル+入力欄+閉じるボタン)をまとめるブロック */
 .form_group {
-    margin: 20px 20px;
-    display: flex;
+    margin: 1.04vw 1.04vw; /* 20px 20px */
+    display: flex; /* ラベルと入力欄を並べる土台 */
     flex-direction: column; /* ラベル（文字）と入力欄も縦並びにする */
     text-align: left; /* 文字を左寄せにする */
 }
 
+/* 本文欄(ラベル+textarea+保存ボタン)をまとめるブロック */
 .form_group_2 {
-    margin: 20px 20px;
-    display: flex;
+    margin: 1.04vw 1.04vw; /* 20px 20px */
+    display: flex; /* ラベルと入力欄を並べる土台 */
     flex-direction: column; /* ラベル（文字）と入力欄も縦並びにする */
     text-align: left; /* 文字を左寄せにする */
     flex: 1; /* 固定の500pxをやめて、パネル内の残りのスペースを全部埋める設定にする！ */
 }
 
+/* 「タイトル」というラベル文字 */
 .title_label {
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 0.52vw; /* 10px。入力欄との間隔 */
+    font-size: 0.94vw; /* 18px */
     font-family: 'Noto Serif JP', serif;
 }
 
+/* 「本文」というラベル文字 */
 .body_label {
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 0.52vw; /* 10px。入力欄との間隔 */
+    font-size: 0.94vw; /* 18px */
     font-family: 'Noto Serif JP', serif;
 }
 
 /* input（一行）と textarea（複数行）の見た目を整える */
 
+/* タイトルを入力する一行の<input> */
 .input_form {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 20%;
-    height: 40px;
+    padding: 0.52vw; /* 10px。入力欄内側の余白 */
+    border: 1px solid #ccc; /* 薄い灰色の枠線 */
+    border-radius: 0.26vw; /* 5px。角を丸める */
+    font-size: 0.83vw; /* 16px */
+    width: 20%; /* 入力欄の横幅 */
+    height: 2.08vw; /* 40px。入力欄の縦幅 */
     font-family: 'Noto Serif JP', serif;
 }
 
+/* 本文を入力する複数行の<textarea> */
 .textarea_form {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    height: 100%;
+    padding: 0.52vw; /* 10px。入力欄内側の余白 */
+    border: 1px solid #ccc; /* 薄い灰色の枠線 */
+    border-radius: 0.26vw; /* 5px。角を丸める */
+    width: 100%; /* 親要素(.form_group_2)の幅いっぱいに広げる */
+    height: 100%; /* 親要素の残りの高さいっぱいに広げる */
     font-family: 'Noto Serif JP', serif;
-    font-size: 16px;
+    font-size: 0.83vw; /* 16px */
 }
 
+/* 「タイトル」ラベルと「閉じる(＜)」ボタンを両端に並べる行 */
 .mamo_panel_head {
-    display: flex;
+    display: flex; /* タイトルラベルと閉じるボタンを横に並べる */
     justify-content: space-between; /* タイトルと閉じるボタンを両端に配置する */
     align-items: center; /* タイトルと閉じるボタンを縦方向の中央に揃える */
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    padding: 0; /* ul標準の内側余白を消す */
+    margin: 0; /* ul標準の外側余白を消す */
+    list-style: none; /* ul の「・」マークを消す */
 }
 
 /* 閉じるボタンのスタイル */
+/* メモパネルを閉じる「＜」ボタン */
 .back_btn {
-    padding: 5px 10px;
-    font-size: 15px;
+    padding: 0.26vw 0.52vw; /* 5px 10px */
+    font-size: 0.78vw; /* 15px */
     font-family: 'Noto Serif JP', serif;
-    background-color: #838d8a;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
+    background-color: #838d8a; /* ボタンの背景色 */
+    color: white; /* 文字色 */
+    border: none; /* 標準の枠線を消す */
+    border-radius: 0.78vw; /* 15px。角を丸める */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
 }
 
 .back_btn:hover {
-    background-color: #6b736f;
-    transition: background-color 0.3s ease;
+    background-color: #6b736f; /* hover時の背景色 */
+    transition: background-color 0.3s ease; /* 背景色の変化に0.3秒かける */
 }
 
+/* 「保存」ボタンを右端に配置するための行 */
 .form_group_3 {
-    margin: 20px 20px;
-    display: flex;
+    margin: 1.04vw 1.04vw; /* 20px 20px */
+    display: flex; /* 保存ボタンを配置する土台 */
     justify-content: flex-end; /* 保存ボタンを右端に配置する */
 }
 
+/* メモを保存する「保存」ボタン */
 #save_btn {
-    padding: 5px 20px;
-    background-color: rgba(91, 174, 147, 0.945);
-    border-radius: 15px;
-    color: white;
-    border: none;
-    cursor: pointer;
+    padding: 0.26vw 1.04vw; /* 5px 20px */
+    background-color: rgba(91, 174, 147, 0.945); /* ボタンの背景色(緑) */
+    border-radius: 0.78vw; /* 15px。角を丸める */
+    color: white; /* 文字色 */
+    border: none; /* 標準の枠線を消す */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
 }
 
 #save_btn:hover {
-    background-color: rgba(91, 174, 147, 0.8);
-    transition: background-color 0.3s ease;
+    background-color: rgba(91, 174, 147, 0.8); /* hover時、少し薄い緑にする */
+    transition: background-color 0.3s ease; /* 背景色の変化に0.3秒かける */
 }
 
 #save_btn:active {
-    background-color: rgba(91, 174, 147, 1);
+    background-color: rgba(91, 174, 147, 1); /* クリックした瞬間、濃い緑にする */
 }
