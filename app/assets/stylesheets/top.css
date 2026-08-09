@@ -4,129 +4,134 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    margin: 0; /* ブラウザ標準で付いている外側の余白を消す */
+    padding: 0; /* ブラウザ標準で付いている内側の余白を消す */
+    font-family: Arial, sans-serif; /* ページ全体のデフォルトフォント */
 }
 
 /* Layout styles */
 .content {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
+    display: flex; /* side_bar と main_content を横に並べる */
+    height: 100vh; /* 画面の高さいっぱいに広げる */
+    width: 100vw; /* 画面の幅いっぱいに広げる */
 }
 
 
 /* サイドバー styles */
+/* 画面サイズに合わせて拡大縮小するように、px を vw(画面横幅の1920px基準の比率)に変換しています */
 .side_bar {
-    height: 100%;
-    width: 4%;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(30px);
-    box-shadow: 2px 0 20px rgba(255, 255, 255, 0.3);
-    display: flex;
+    height: 100%; /* .content の高さいっぱいに広げる */
+    width: 4%; /* 画面幅に対する割合で幅を決める */
+    background: rgba(255, 255, 255, 0.15); /* 半透明の白背景 */
+    backdrop-filter: blur(3px); /* 背後の景色をぼかす、すりガラス風の効果 */
+    -webkit-backdrop-filter: blur(30px); /* Safari対応版のぼかし効果 */
+    box-shadow: 2px 0 20px rgba(255, 255, 255, 0.3); /* サイドバーの縁に光の効果を付ける */
+    display: flex; /* 中の要素(アイコン等)をFlexboxで並べる */
     flex-direction: column; /* 縦向きのFlexboxにする */
 }
 
 /* メインコンテンツの親要素 styles */
 .main-box {
     flex: 1; /* calcの代わりに、残りのスペースを自動で全部もらう！ */
-    width: 100%;
-    list-style: none;
-    padding: 0;
-    margin-top: 90px; /* はみ出た分は、親要素のdisplay: flex;の機能で、カバー。 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 50px;
+    width: 100%; /* side_bar の幅いっぱいに広げる */
+    list-style: none; /* ul の「・」マークを消す */
+    padding: 0; /* ul 標準の内側の余白を消す */
+    margin-top: 4.69vw; /* 90px。一番上のアイコンとサイドバー上端との間隔 */
+    display: flex; /* 中のアイコンをFlexboxで並べる */
+    flex-direction: column; /* アイコンを縦に並べる */
+    align-items: center; /* 横方向の中央に揃える */
+    gap: 2.6vw; /* 50px。アイコン同士の縦の間隔 */
 }
 
 /* メインコンテンツの子要素 styles */
 .item-boxes {
-    font-size: 33px;
-    font-family: 'Noto Serif JP', serif;
-    cursor: pointer;
-    transition: color 1s ease;
-    color: rgba(215, 215, 215, 0.874);
+    font-size: 1.72vw; /* 33px。アイコンの文字サイズ */
+    font-family: 'Noto Serif JP', serif; /* 和文の明朝体フォントを指定 */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
+    transition: color 1s ease; /* hover時の文字色の変化に1秒かける */
+    color: rgba(215, 215, 215, 0.874); /* 通常時の文字色(うっすら灰色がかった白) */
 }
 
 /* 閉じるボタン styles */
 .item-close {
-    font-size: 33px;
+    font-size: 1.72vw; /* 33px */
     font-family: 'Noto Serif JP', serif;
-    cursor: pointer;
-    transition: color 1s ease;
-    color: rgba(215, 215, 215, 0.874);
-    margin-top: auto; /* 余った縦スペースを全部自分の上のmarginにする */
-    margin-bottom: 30px;
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
+    transition: color 1s ease; /* hover時の文字色の変化に1秒かける */
+    color: rgba(215, 215, 215, 0.874); /* 通常時の文字色 */
+    margin-top: auto; /* 余った縦スペースを全部自分の上のmarginにする(=一番下に固定される) */
+    margin-bottom: 1.56vw; /* 30px。サイドバー下端との間隔 */
 }
 
 .item-boxes:hover {
-    color: #ffffff;
-    text-shadow: black 1px 1px 1px;
-    transition: color 0.5s ease;
+    color: #ffffff; /* hover時、文字色を白に変える */
+    text-shadow: black 1px 1px 1px; /* 文字にごく薄い縁取りを付けて見やすくする */
+    transition: color 0.5s ease; /* 文字色の変化に0.5秒かける */
 }
 
 .item-close:hover {
-    color: #ef5d19eb;
-    text-shadow: black 1px 1px 1px;
-    transition: color 0.5s ease;
+    color: #ef5d19eb; /* hover時、文字色をオレンジに変える */
+    text-shadow: black 1px 1px 1px; /* 文字にごく薄い縁取りを付けて見やすくする */
+    transition: color 0.5s ease; /* 文字色の変化に0.5秒かける */
 }
+
+
+
+
 
 /* メインコンテンツ styles */
 .main_content {
-    height: 100%;
-    flex: 1;
-    background-color: transparent;
-    position: relative;
+    height: 100%; /* .content の高さいっぱいに広げる */
+    flex: 1; /* side_bar の残りの横幅を全部占有する */
+    background-color: transparent; /* 背後の背景画像を透過させる */
+    position: relative; /* main_panel や折りたたみパネル等の絶対配置(position: absolute)の基準点にする */
 }
 
 /* 画面右下のタイトル表記 styles */
 .main_title {
-    position: absolute;
-    right: 60px;
-    bottom: 30px;
-    font-size: 65px;
+    position: absolute; /* .main_content を基準に宙に浮かせる */
+    right: 3.13vw; /* 60px。右端からの距離 */
+    bottom: 1.56vw; /* 30px。下端からの距離 */
+    font-size: 3.39vw; /* 65px */
     font-family: 'Noto Serif JP', serif;
-    color: rgba(255, 255, 255, 0.627);
-    transition: all 2s ease;
+    color: rgba(255, 255, 255, 0.627); /* 半透明の白文字 */
+    transition: all 2s ease; /* opacity/visibilityの変化に2秒かける */
     opacity: 1; /* 初期状態では表示する */
-    visibility: visible;
+    visibility: visible; /* 初期状態では見える状態にする */
 }
 
 .main_title.show {
     opacity: 0; /* 透明度を0%にしてフェードアウト */
-    visibility: hidden;
-    transition: all 0.6s ease;
+    visibility: hidden; /* クリックできないよう非表示にする */
+    transition: all 0.6s ease; /* フェードアウトの変化に0.6秒かける */
 }
 
 /* ヘッダー styles */
 .right_header {
-    height: 10%;
-    width: 100%;
-    background-color: transparent;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    height: 10%; /* .main_content の上部10%を占有する */
+    width: 100%; /* .main_content の幅いっぱいに広げる */
+    background-color: transparent; /* 背後を透過させる */
+    display: flex; /* タイトルとリンク一覧を横に並べる */
+    justify-content: space-between; /* タイトルとリンク一覧を両端に配置する */
+    align-items: center; /* 縦方向の中央に揃える */
 }
 
 .header_item {
-    display: flex;
-    gap: 20px;
-    margin-right: 50px;
-    list-style: none;
+    display: flex; /* リンクアイコンを横に並べる */
+    gap: 1.04vw; /* 20px。アイコン同士の間隔 */
+    margin-right: 2.6vw; /* 50px。画面右端との間隔 */
+    list-style: none; /* ul の「・」マークを消す */
 }
 
 /* ヘッダータイトル styles */
 #header_title {
-    font-size: 60px;
+    font-size: 3.13vw; /* 60px */
     font-family: 'Noto Serif JP', serif;
-    color: rgba(235, 235, 235, 0.931);
-    padding-left: 60px;
-    padding-top: 15px;
-    margin: 0;
-    opacity: 0; /* 透明度を0%にする */
+    color: rgba(235, 235, 235, 0.931); /* ほぼ白の文字色 */
+    padding-left: 3.13vw; /* 60px。左端からの余白 */
+    padding-top: 0.78vw; /* 15px。上端からの余白 */
+    margin: 0; /* h1等の標準マージンを消す */
+    opacity: 0; /* 透明度を0%にする(初期状態は非表示) */
     transition: opacity 2s ease; /* 透明度の変化に2秒かける */
 }
 
@@ -136,36 +141,42 @@ body {
 
 /* 外部リンクアイコン styles */
 .header_links {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    margin-right: 50px;
-    gap: 50px;
-    align-items: center;
+    display: flex; /* アイコンを横に並べる */
+    list-style: none; /* ul の「・」マークを消す */
+    padding: 0; /* ul標準の内側余白を消す */
+    margin: 0; /* ul標準の外側余白を消す */
+    margin-right: 2.6vw; /* 50px。画面右端との間隔 */
+    gap: 2.6vw; /* 50px。アイコン同士の間隔 */
+    align-items: center; /* 縦方向の中央に揃える */
 }
 
 .header_links li a img {
-    width: 35px;
-    height: 35px;
-    border-radius: 4px;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+    width: 1.82vw; /* 35px */
+    height: 1.82vw; /* 35px */
+    border-radius: 0.21vw; /* 4px。角を少し丸める */
+    opacity: 0.8; /* 少し薄く表示し、hoverで濃くする */
+    transition: opacity 0.2s ease; /* 透明度の変化に0.2秒かける */
 }
 
 .header_links li a img:hover {
-    opacity: 1;
+    opacity: 1; /* hover時、完全に不透明にする */
 }
+
+
+
+
+
+
 
 /* メインパネル styles */
 #main_panel {
-    position: absolute;
-    top: 14%;
+    position: absolute; /* .main_content を基準に宙に浮かせる */
+    top: 14%; /* 上端からの距離 */
     left: 2%; /* 宙に浮いている要素は left で座標を指定します！ */
-    width: 30%;
-    height: 80%;
-    border-radius: 22px;
-    background-color: #c9d1c8;
+    width: 30%; /* パネルの横幅 */
+    height: 80%; /* パネルの縦幅 */
+    border-radius: 1.15vw; /* 22px。角を丸める */
+    background-color: #c9d1c8; /* パネルの背景色 */
     opacity: 0; /* 初期状態では透明にする */
     transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
     visibility: hidden; /* 初期状態では非表示にする */
@@ -178,94 +189,93 @@ body {
 }
 
 #main_panel_inner {
-    height: 100%;
+    height: 100%; /* #main_panel の高さいっぱいに広げる */
     overflow-y: auto; /* はみ出た時「だけ」空気を読んでスクロールバーを出す、王道の設定に変更！ */
-    padding-bottom: 60px; /* スクロールバーの分だけ下に余白を作る！ */
 }
 
 .add_menu_wrapper {
     position: absolute; /* 親（パネル）を基準に宙に浮かせる */
-    top: 10px;          /* 上から10pxの位置 */
-    right: 10px;        /* 右から10pxの位置にピタッとくっつける！ */
-    display: flex;
-    flex-direction: row-reverse;
-    padding: 0;
+    top: 0.52vw;          /* 10px。パネル上端からの距離 */
+    right: 0.52vw;        /* 10px。パネル右端からの距離 */
+    display: flex; /* 追加ボタンとメニューを横に並べる */
+    flex-direction: row-reverse; /* 追加ボタンを一番右に、メニューをその左に出す */
+    padding: 0; /* 余白なし */
     align-items: center; /* アイコンを上下中央に揃える */
 }
 
-#add_btn, #folder_add_btn {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 1px solid #696969;
-    background-color: #848488;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+#add_btn, .folder_add_btn {
+    width: 1.82vw; /* 35px */
+    height: 1.82vw; /* 35px */
+    border-radius: 50%; /* 円形のボタンにする */
+    border: 1px solid #696969; /* ボタンの枠線 */
+    background-color: #848488; /* ボタンの背景色 */
+    color: white; /* 「+」の文字色 */
+    font-size: 1.25vw; /* 24px。「+」の文字サイズ */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* hover時の色変化に0.3秒かける */
 }
 
-#add_btn:hover, #folder_add_btn:hover {
-    background-color: #9f9fa5;
-    border-color: #b0b0b0;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    color: black;
+#add_btn:hover, .folder_add_btn:hover {
+    background-color: #9f9fa5; /* hover時の背景色 */
+    border-color: #b0b0b0; /* hover時の枠線色 */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* 色変化に0.3秒かける */
+    color: black; /* hover時の文字色 */
 }
 
 /* スクロールバー全体の幅 */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 0.31vw; /* 6px */
 }
 
 /* レール部分（背景） */
 ::-webkit-scrollbar-track {
-    background: rgba(205, 205, 205, 0.754);
-    margin-top: 60px; /* 上から60pxの位置からスタート */
-    margin-bottom: 60px; /* 下から60pxの位置で終わるようにする */
-    border-radius: 10px;
+    background: rgba(205, 205, 205, 0.754); /* レールの背景色 */
+    margin-top: 3.13vw; /* 60px。レール上端の余白 */
+    margin-bottom: 3.13vw; /* 60px。レール下端の余白 */
+    border-radius: 0.52vw; /* 10px。レールの角を丸める */
 }
 
 /* つまむ部分（バー本体） */
 ::-webkit-scrollbar-thumb {
-    background-color: #aaa;
-    border-radius: 10px;
-    min-height: 60px; /* バーの最短の長さ */
+    background-color: #aaa; /* つまみの色 */
+    border-radius: 0.52vw; /* 10px。つまみの角を丸める */
+    min-height: 3.13vw; /* 60px。つまみが小さくなりすぎないようにする最小高さ */
 }
 
-#memo_select, #folder_memo_select {
-    list-style: none;
-    padding: 5px 10px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
+#memo_select, .memo_select {
+    list-style: none; /* ul の「・」マークを消す */
+    padding: 0.26vw 0.52vw; /* 5px 10px */
+    margin: 0; /* ul標準の外側余白を消す */
+    display: flex; /* 「メモ」「or」「フォルダ」を横に並べる */
+    align-items: center; /* 縦方向の中央に揃える */
+    margin-right: 0.52vw; /* 10px。追加ボタンとの間隔 */
     background: rgba(255, 255, 255, 0.15); /* 半透明の白背景を追加！ */
     backdrop-filter: blur(10px);           /* 背景を10px分ぼかす！ */
     -webkit-backdrop-filter: blur(10px);   /* Safari対応 */
-    border-radius: 20px; /* 角を丸くする */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease;
+    border-radius: 1.04vw; /* 20px。角を丸める */
+    opacity: 0; /* 初期状態では非表示(追加ボタンを押すまで隠す) */
+    visibility: hidden; /* クリックできないよう非表示にする */
+    transition: opacity 0.4s ease; /* 表示/非表示の変化に0.4秒かける */
 }
 
-#memo_select.show, #folder_memo_select.show {
+#memo_select.show, .memo_select.show {
     opacity: 1; /* 透明度を100%にして完全に見えるようにする */
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
 .memo_list {
-    display: flex;
-    margin-right: 10px;
+    display: flex; /* 中身を横に並べる */
+    margin-right: 0.52vw; /* 10px */
 }
 
 /* --- メモ選択エリアのスタイル --- */
 .new_items {
-    text-align: center;
-    font-size: 15px;
+    text-align: center; /* 文字を中央揃えにする */
+    font-size: 0.78vw; /* 15px */
     font-family: 'Noto Serif JP', serif;
-    color: rgb(78, 78, 78);
-    cursor: pointer;
-    margin-right: 0px;
+    color: rgb(78, 78, 78); /* 文字色(グレー) */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
+    margin-right: 0px; /* 右側の余白なし */
     opacity: 0; /* 初期状態では透明にする */
     visibility: hidden; /* 初期状態では非表示にする */
     transition: all 0.6s ease; /* 透明度の変化に0.6秒かける */
@@ -277,11 +287,11 @@ body {
 }
 
 .or_item {
-    font-size: 13px;
+    font-size: 0.68vw; /* 13px */
     font-family: 'Noto Serif JP', serif;
-    color: rgb(78, 78, 78);
-    margin-right: 10px;
-    margin-left: 10px;
+    color: rgb(78, 78, 78); /* 文字色(グレー) */
+    margin-right: 0.52vw; /* 10px */
+    margin-left: 0.52vw; /* 10px */
     opacity: 0; /* 初期状態では透明にする */
     transition: all 1.0s ease; /* 透明度の変化に1秒かける */
 }
@@ -291,28 +301,34 @@ body {
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
+
+
+
+
+
+
 /* --- アイコン表示エリアのスタイル --- */
 .icon-container {
-    margin-top: 70px;
+    margin-top: 3.65vw; /* 70px。追加ボタン等との間隔 */
     display: grid; /* アイコンをグリッドレイアウトにする。 */
     flex-wrap: wrap; /* 画面の端で自動的に折り返す！ */
-    grid-template-columns: repeat(4, 80px); /* 4列のグリッドレイアウトにする */
-    justify-content: center; /* アイコンを中央揃えにする */
-    gap: 20px; /* アイコン同士の隙間を空ける */
+    grid-template-columns: repeat(4, 4.17vw); /* 4列のグリッドレイアウトにする(80px) */
+    gap: 1.04vw; /* 20px。アイコン同士の間隔 */
+    justify-content: space-evenly; /* グリッド全体に余りスペースがある時、アイコンの間と外側に均等に配分する（上のcenterより優先される） */
 }
 
 .folder-icon {
-    display: flex;
+    display: flex; /* アイコンと名前を縦に並べる土台 */
     flex-direction: column; /* アイコンと名前を縦に並べる */
     align-items: center; /* 水平方向の中央に揃える */
-    width: 80px; /* アイコン1つ分の幅を固定する */
-    cursor: pointer;
+    width: 4.17vw; /* アイコン1つ分の幅を固定する(80px) */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
     position: relative; /* チェックボックス(select-checkbox)をアイコンの中に絶対配置するために、親要素をrelativeにする！ */
 }
 
 .folder-icon .material-symbols-outlined {
-    font-size: 60px; /* アイコンの大きさを指定 */
-    color: #5f6368;
+    font-size: 3.13vw; /* アイコンの大きさを指定(60px) */
+    color: #5f6368; /* アイコンの色(グレー、色未設定時のデフォルト) */
 }
 
 /* --- 個別のアイコンの色設定 --- */
@@ -335,34 +351,34 @@ body {
 /* --- アイコンの選択状態のスタイル --- */
 .folder-icon.selecting {
     background-color: rgba(167, 167, 167, 0.096); /* 選択中っぽい青い背景 */
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
+    border-radius: 0.52vw; /* 10px */
+    transition: background-color 0.3s ease; /* 背景色の変化に0.3秒かける */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
 }
 
 .select-checkbox {
     position: absolute; /* 親（アイコン）を基準に宙に浮かせる */
-    top: 4px;
-    left: 4px;
+    top: 0.21vw; /* 4px。アイコン上端からの距離 */
+    left: 0.21vw; /* 4px。アイコン左端からの距離 */
 }
 
 /* --- フォルダ名表示エリアのスタイル --- */
 .folder-name {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: 12px;
-    color: #3c4043;
+    margin-top: 0.26vw; /* 5px。アイコン画像との間隔 */
+    margin-bottom: 0.26vw; /* 5px */
+    font-size: 0.63vw; /* 12px */
+    color: #3c4043; /* 文字色(ダークグレー) */
     font-family: 'Noto Serif JP', serif;
 }
 
 /* --- フォルダ名入力中のスタイル --- */
 .folder-name-input {
-    margin-top: 5px;
-    font-size: 12px;
+    margin-top: 0.26vw; /* 5px。アイコン画像との間隔 */
+    font-size: 0.63vw; /* 12px */
     font-family: 'Noto Serif JP', serif;
-    text-align: center;
-    width: 100%;
+    text-align: center; /* 文字を中央揃えにする */
+    width: 100%; /* 親要素(.folder-icon)の幅いっぱいに広げる */
     border: 1px solid #4285f4; /* 選択中っぽい青い枠線 */
-    border-radius: 3px;
+    border-radius: 0.16vw; /* 3px */
     outline: none; /* デフォルトの太い枠線を消す */
 }

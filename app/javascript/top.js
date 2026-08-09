@@ -45,7 +45,7 @@ document.addEventListener('turbo:load', function () {
       header_title.classList.remove('show');
       main_title.classList.remove('show');
       show_panel.classList.remove('show');
-      folder_panel.classList.remove('show');
+      folder_panel.innerHTML = ''; // 開いてるフォルダのカラムを全部消す
       closeAddMenu();
       window.action_bar.classList.remove('show');
       if (window.isSelecting) window.turnOffSelectMode(); // 選択モード中なら解除
