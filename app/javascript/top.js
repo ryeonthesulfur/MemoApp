@@ -19,8 +19,19 @@ document.addEventListener('turbo:load', function () {
     main_title,    // MIND PALACE的な大きいタイトル文字
     icon_container, // アイコンを並べてる場所(.icon-container)
     show_panel,
-    folder_panel
+    folder_panel,
+    bgm
   } = getRefs();
+
+  // bgm の再生
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      bgm.play();
+    }
+  }, {
+    once: true
+  });
+
 
   // new_items[0] が「メモ」ボタン、new_items[1] が「フォルダ」ボタン
   const memo_btn = new_items[0];
