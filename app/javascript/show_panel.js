@@ -1,3 +1,4 @@
+// このファイルは、メモの詳細表示・編集・保存(PATCH /memos/:id)・閉じる、を担当
 // window.js の getRefs() を読み込む
 import { getRefs } from "window"
 

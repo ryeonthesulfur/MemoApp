@@ -1,3 +1,4 @@
+// このファイルは、フォルダの無限カラム表示(クリックした分だけ右にパネルが展開する)、カラム内でのフォルダ新規作成・名前変更(いずれも保存込み)を担当
 import {getRefs} from "window"
 
 document.addEventListener('turbo:load', function () {

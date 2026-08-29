@@ -1,3 +1,4 @@
+// このファイルは、メインパネルでの新規フォルダの作成(POST /folders)を担当
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {

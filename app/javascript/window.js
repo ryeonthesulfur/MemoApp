@@ -1,3 +1,4 @@
+// このファイルは、各JSファイルからよく使うDOM要素をまとめて取得するgetRefs()関数を提供
 export function getRefs() {
   return {
     panel: document.getElementById('main_panel'),

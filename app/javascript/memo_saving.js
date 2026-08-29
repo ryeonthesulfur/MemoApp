@@ -1,3 +1,4 @@
+// このファイルは、新規メモの保存(POST /memos)を担当
 // window.js の getRefs() を読み込む
 import { getRefs } from "window"
 
