@@ -114,9 +114,46 @@ document.addEventListener('turbo:load', function () {
       nameInput.focus();
       nameInput.select();
 
-      function finishEditing() {
-        nameSpan.textContent = nameInput.value || nameSpan.textContent;
-        if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
+      async function finishEditing() {
+        const newName = nameInput.value || nameSpan.textContent;
+
+        if (parentIcon.dataset.folderId) {
+           const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+          },
+          body: JSON.stringify({
+            folder: {
+              name: newName,
+            },
+          }),
+        });
+        const savedFolder = await response.json();
+        nameSpan.textContent = savedFolder.name;
+      } else if (parentIcon.dataset.memoId) {
+         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+         const response = await fetch(`/memos/${parentIcon.dataset.memoId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+          },
+          body: JSON.stringify({
+            memo: {
+              title: newName,
+            },
+          }),
+         });
+         const savedMemo = await response.json();
+         nameSpan.textContent = savedMemo.title;
+      }
+
+      if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
       }
 
       nameInput.addEventListener('blur', finishEditing);
