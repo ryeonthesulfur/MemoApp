@@ -73,10 +73,54 @@ document.addEventListener('turbo:load', function () {
                 folderShowContent.appendChild(childIcon);
             });
 
+
+
             // 無限入れ子構造のための記述
             folderShowContent.addEventListener('click', function (e) {
                 // もしアイコンの下のタイトルをクリックしたら、無反応。
-                if (e.target.classList.contains('folder-name')) return;
+                // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
+                if (e.target.classList.contains('folder-name')) {
+                    const nameSpan = e.target;
+                    const parentIcon = nameSpan.parentElement;
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.value = nameSpan.textContent;
+                    nameInput.classList.add('folder-name-input');
+                    parentIcon.replaceChild(nameInput, nameSpan);
+                    nameInput.focus();
+                    nameInput.select();
+
+                    async function finishEditing() {
+                        const newName = nameInput.value || nameSpan.textContent;
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                        const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-Token': csrfToken,
+                            },
+                            body: JSON.stringify({
+                                folder: {
+                                    name: newName,
+                                },
+                            }),
+                        });
+                        const savedFolder = await response.json();
+
+                        nameSpan.textContent = savedFolder.name;
+                        if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
+                    }
+
+                    nameInput.addEventListener('blur', finishEditing);
+                    nameInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') finishEditing();
+                    });
+
+
+
+                    return;
+                }
 
                 // 「childIcon」を再取得。
                 const childIcon = e.target.closest('.folder-icon');
