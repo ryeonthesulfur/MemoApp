@@ -27,7 +27,7 @@ class MemosController < ApplicationController
 private
 
   def memo_params
-    params.require(:memo).permit(:content, :title, :color)
+    params.require(:memo).permit(:content, :title, :color, :folder_id) # ▲▲▲ folder_idを追加(これが無いと、JSから送ってもStrong Parametersで無視されてしまう)
   end
 
   def set_memo
