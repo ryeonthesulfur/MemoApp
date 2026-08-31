@@ -28,6 +28,7 @@ save_btn.addEventListener('click', function () {
         memo: {
           title: title_input.value,
           content: body_input.value,
+          folder_id: window.currentColumnFolderId, // ▲▲▲ どのフォルダの中で作られたメモか(nullならルート直下)
         },
       }),
     })
@@ -47,7 +48,16 @@ save_btn.addEventListener('click', function () {
           <span class="material-symbols-outlined color-blue">description</span>
           <span class="folder-name">${savedMemo.title || '無題'}</span>
         `;
-        window.icon_container.appendChild(new_memo);
+
+        // ▲▲▲ folder_idがあれば、そのフォルダのカラムが今開いていればその中に追加。無ければメインパネルに追加。
+        if (savedMemo.folder_id) {
+          const targetColumn = document.querySelector(`.folder_column[data-folder-id="${savedMemo.folder_id}"] .folder_show_content`);
+          if (targetColumn) targetColumn.appendChild(new_memo);
+        } else {
+          window.icon_container.appendChild(new_memo);
+        }
+
+        window.currentColumnFolderId = null; // ▲▲▲ 使い終わったのでリセットしておく
 
         // 入力欄を空に戻す
         title_input.value = '';

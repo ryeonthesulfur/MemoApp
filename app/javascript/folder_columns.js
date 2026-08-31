@@ -74,6 +74,18 @@ document.addEventListener('turbo:load', function () {
                 folderShowContent.appendChild(childIcon);
             });
 
+            // ▲▲▲ このフォルダの中にあるメモも、子フォルダと同じようにアイコンとして並べる
+            folder.memos.forEach(function (memo) {
+                const memoIcon = document.createElement('div');
+                memoIcon.classList.add('folder-icon');
+                memoIcon.dataset.memoId = memo.id;
+                memoIcon.innerHTML = `
+                    <span class="material-symbols-outlined color-blue">description</span>
+                    <span class="folder-name">${memo.title || '名称未設定メモ'}</span>
+                `;
+                folderShowContent.appendChild(memoIcon);
+            });
+
 
 
             // 無限入れ子構造のための記述
@@ -125,9 +137,16 @@ document.addEventListener('turbo:load', function () {
 
                 // 「childIcon」を再取得。
                 const childIcon = e.target.closest('.folder-icon');
+                if (!childIcon) return;
 
-                // もし、クリックされたものがchildIconじゃない場合、もしくは選択したchildiconとは別の id のものだった場合、無反応。
-                if (!childIcon || !childIcon.dataset.folderId) return;
+                // ▲▲▲ クリックされたのがメモのアイコンだったら、メモ詳細を開いて終わり(フォルダを開く処理には進まない)
+                if (childIcon.dataset.memoId) {
+                    window.openMemoDetail(childIcon.dataset.memoId);
+                    return;
+                }
+
+                // フォルダじゃないアイコンをクリックした場合は無反応。
+                if (!childIcon.dataset.folderId) return;
 
                 // パネル生成のための関数にクリックした子フォルダの id を仮引数として渡す。
                 createFolderColumn(childIcon.dataset.folderId, column);
@@ -154,6 +173,17 @@ document.addEventListener('turbo:load', function () {
                 newItems.forEach(item => item.classList.toggle('show'));
                 orItem.classList.toggle('show');
                 memoSelect.classList.toggle('show');
+            });
+
+            // ▲▲▲ このカラムの中で「メモ」を選んだら、このフォルダのidを覚えておいてメモ編集パネルを開く
+            const memoBtn = newItems[0];
+            const memo_panel = document.getElementById('memo_panel');
+            memoBtn.addEventListener('click', function () {
+                window.currentColumnFolderId = folderId;
+                memo_panel.classList.add('show');
+                newItems.forEach(item => item.classList.remove('show'));
+                orItem.classList.remove('show');
+                memoSelect.classList.remove('show');
             });
 
 
