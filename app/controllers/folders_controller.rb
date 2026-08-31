@@ -11,7 +11,7 @@ class FoldersController < ApplicationController
 
   def show
     @folder = Folder.find(params[:id])
-    render json: @folder.as_json(include: [ :children ])
+    render json: @folder.as_json(include: [ :children, :memos ]) # ▲▲▲ 子フォルダに加えて、このフォルダの中のメモも一緒に返す
   end
 
   def update
