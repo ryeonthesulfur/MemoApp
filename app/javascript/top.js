@@ -41,6 +41,9 @@ document.addEventListener('turbo:load', function () {
   // select.js が window.icon_container を見に来るので、ここでも window に載せておく
   window.icon_container = icon_container;
 
+  // ▲▲▲ 「今、どのフォルダの中でメモを作ろうとしてるか」を覚えておく共有変数。nullならルート直下(メインパネル)向け
+  window.currentColumnFolderId = null;
+
   // 「+」ボタンで開いた「メモ or フォルダ」の選択メニューを閉じる処理(共通化してまとめてある)
   function closeAddMenu() {
     new_items.forEach(item => item.classList.remove('show'));
@@ -79,6 +82,7 @@ document.addEventListener('turbo:load', function () {
 
   // 「メモ」を選んだら、メモ編集パネルを表示する
   memo_btn.addEventListener('click', function () {
+    window.currentColumnFolderId = null; // ▲▲▲ もし別のフォルダでメモを作成するのをやっぱりやめる時、ここでリセットしないと、次に作るメモがそのまま前のフォルダの中に保存されてしまう
     memo_panel.classList.add('show');
     panel.classList.remove('show');
     closeAddMenu();
