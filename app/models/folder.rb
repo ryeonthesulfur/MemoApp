@@ -1,7 +1,7 @@
 class Folder < ApplicationRecord
   belongs_to :parent, class_name: "Folder", optional: true
-  has_many :children, class_name: "Folder", foreign_key: "parent_id"
-  has_many :memos # ▲▲▲ このフォルダの中にあるメモ一覧を取れるようにする
+  has_many :children, class_name: "Folder", foreign_key: "parent_id", dependent: :destroy
+  has_many :memos, dependent: :destroy # ▲▲▲ このフォルダの中にあるメモ一覧を取れるようにする＋親フォルダを消すと中身も消す。
 end
 
 
