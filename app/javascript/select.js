@@ -38,14 +38,25 @@ document.addEventListener('turbo:load', function () {
     }
   });
 
-  // 「削除」ボタン: チェックが付いてるアイコンだけ画面から消す
+  // 「削除」ボタン: チェックが付いてるアイコンを、サーバー側も含めて削除する
   const delete_btn = document.getElementById('delete_btn');
-  delete_btn.addEventListener('click', function () {
+  delete_btn.addEventListener('click', async function () {
     const icons = window.icon_container.querySelectorAll('.folder-icon');
-    icons.forEach(icon => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+    for (const icon of icons) {
       const checkbox = icon.querySelector('.select-checkbox');
-      if (checkbox && checkbox.checked) icon.remove();
-    });
+      if (checkbox && checkbox.checked) {
+        const url = icon.dataset.folderId ? `/folders/${icon.dataset.folderId}` : `/memos/${icon.dataset.memoId}`;
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+        });
+        if (response.ok) icon.remove();
+      }
+    }
     window.turnOffSelectMode();
   });
 
