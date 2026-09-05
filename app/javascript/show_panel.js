@@ -35,6 +35,7 @@ document.addEventListener('turbo:load', function () {
 
   // アイコンがクリックされたら、名前クリックかアイコンクリックかを判定する
   icon_container.addEventListener('click', function (e) {
+    if (window.isSelecting) return;
     if (e.target.classList.contains('folder-name')) {
       return; // 名前がクリックされた時は、top.js のインライン編集に任せて何もしない
     }

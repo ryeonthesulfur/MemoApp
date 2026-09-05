@@ -6,6 +6,7 @@ document.addEventListener('turbo:load', function () {
     const folder_columns_container = document.getElementById('folder_columns_container');
 
     icon_container.addEventListener('click', function (e) {
+        if (window.isSelecting) return;
         if (e.target.classList.contains('folder-name')) {
             return;
         }   // フォルダ名をクリックしたら無反応にする。
