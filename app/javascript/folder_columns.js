@@ -5,7 +5,11 @@ document.addEventListener('turbo:load', function () {
     const { icon_container } = getRefs();
     const folder_columns_container = document.getElementById('folder_columns_container');
 
+    // ============================================================
+    // ◆ ① メインパネルのフォルダアイコンをクリックした時の入口
+    // ============================================================
     icon_container.addEventListener('click', function (e) {
+        if (window.isSelecting) return;
         if (e.target.classList.contains('folder-name')) {
             return;
         }   // フォルダ名をクリックしたら無反応にする。
@@ -17,25 +21,31 @@ document.addEventListener('turbo:load', function () {
         // クリックされた要素に id を仮引数として持たせる。これを下の実処理の関数に渡す。
         createFolderColumn(icon.dataset.folderId, null);
 
+        // ============================================================
+        // ◆ ② パネルを作る本体の関数   
+        // ============================================================
         // クリックされたフォルダの id を受け取り、その中身のためのパネルを生成する。
         async function createFolderColumn(folderId, afterColumn) {
 
             if (afterColumn === null) {
-                // メインパネルから呼ばれた場合の処理
-                folder_columns_container.innerHTML = '';
+                // afterColumnがnull = メインパネルから呼ばれた(一番根本から選び直した)
+                folder_columns_container.innerHTML = ''; // なので、今開いてるカラムを全部消す
             } else {
-                // フォルダパネルから呼ばれた場合の処理
-                // 「afterColumnの次にまだ要素がある限り、それを削除し続ける」という繰り返し処理
-              while(afterColumn.nextElementSibling) {
-                afterColumn.nextElementSibling.remove();
-              }
+                // afterColumnがある = カラムの中の子フォルダから呼ばれた
+                while(afterColumn.nextElementSibling) {
+                    // afterColumn(今回のクリック元のカラム)の「次の要素」がまだ残ってる間、くり返す
+                    afterColumn.nextElementSibling.remove(); // その「次の要素」(=afterColumnより右にある、古いカラム)を1個消す
+                }
+                // ↑ 1個消すたびに、また次の要素がnextElementSiblingに繰り上がってくるので、無くなるまでくり返す
             }
 
-            const response = await fetch(`/folders/${folderId}`);
-            const folder = await response.json();
+            const response = await fetch(`/folders/${folderId}`); // クリックされたフォルダの最新情報をサーバーに取りに行く
+            const folder = await response.json(); // 返ってきたJSON文字列を、JSで使えるオブジェクトに変換する
 
 
-
+            // ============================================================
+            // ◆ ③ カラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
+            // ============================================================
             // 選択したフォルダの中身を表すためのパネルを「column」とする。
             const column = document.createElement('div');
             column.classList.add('folder_column');
@@ -62,7 +72,7 @@ document.addEventListener('turbo:load', function () {
 
             // 「folder_show_content」の中に子フォルダが入るようにする。
             const folderShowContent = column.querySelector('.folder_show_content');
-            
+
             folder.children.forEach(function (child) {
                 const childIcon = document.createElement('div');
                 childIcon.classList.add('folder-icon');
@@ -87,7 +97,9 @@ document.addEventListener('turbo:load', function () {
             });
 
 
-
+            // ============================================================
+            // ◆ ④ カラムの中のアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
+            // ============================================================
             // 無限入れ子構造のための記述
             folderShowContent.addEventListener('click', function (e) {
                 // もしアイコンの下のタイトルをクリックしたら、無反応。
@@ -130,8 +142,6 @@ document.addEventListener('turbo:load', function () {
                         if (e.key === 'Enter') finishEditing();
                     });
 
-
-
                     return;
                 }
 
@@ -153,6 +163,9 @@ document.addEventListener('turbo:load', function () {
             });
 
 
+            // ============================================================
+            // ◆ ⑤ カラム上部のボタン(閉じる・追加メニュー開閉・メモ作成)
+            // ============================================================
             // メモ・フォルダ追加ボタン、閉じるボタンのための要素取得
             const closeButton = column.querySelector('.close_button');
             const addBtn = column.querySelector('.folder_add_btn');
@@ -187,7 +200,9 @@ document.addEventListener('turbo:load', function () {
             });
 
 
-
+            // ============================================================
+            // ◆ ⑥ このカラムの中に新規フォルダを作成する機能
+            // ============================================================
             // 選択して開いたフォルダパネルの中に新規フォルダを作成する機能。
             const folderBtn = newItems[1];
             folderBtn.addEventListener('click', function () {

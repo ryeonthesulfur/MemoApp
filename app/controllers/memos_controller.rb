@@ -1,5 +1,5 @@
 class MemosController < ApplicationController
-  before_action :set_memo, only: [ :show, :update ]
+  before_action :set_memo, only: [ :show, :update, :destroy ]
 
   def create
     memo = Memo.new(memo_params)
@@ -23,6 +23,10 @@ class MemosController < ApplicationController
     end
   end
 
+  def destroy
+    @memo.destroy
+    head :no_content
+  end
 
 private
 
