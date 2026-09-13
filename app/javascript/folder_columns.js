@@ -100,12 +100,13 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ④ 子フォルダの中のアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
+            // ◆ ④ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
             // ============================================================
-            // 無限入れ子構造のための記述
+            // ▼▼▼タイトル編集の際の記述▼▼▼
             folderShowContent.addEventListener('click', function (e) {
                 if (window.isSelecting) return; // 選択モード中は、フォルダを開いたりメモを開いたりしない
-                // もしアイコンの下のタイトルをクリックしたら、無反応。
+                // ▲もしアイコンの下のタイトルをクリックしたら、無反応。
+
                 // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
                 if (e.target.classList.contains('folder-name')) {
                     const nameSpan = e.target;
@@ -122,21 +123,39 @@ document.addEventListener('turbo:load', function () {
                         const newName = nameInput.value || nameSpan.textContent;
                         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-                        const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-Token': csrfToken,
-                            },
-                            body: JSON.stringify({
-                                folder: {
-                                    name: newName,
+                        // ▲▲▲ クリックしたのがフォルダかメモかで、編集したタイトルの送信先とレスポンスの受け取り方を変える
+                        if (parentIcon.dataset.folderId) {
+                            const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-Token': csrfToken,
                                 },
-                            }),
-                        });
-                        const savedFolder = await response.json();
+                                body: JSON.stringify({
+                                    folder: {
+                                        name: newName,
+                                    },
+                                }),
+                            });
+                            const savedFolder = await response.json();
+                            nameSpan.textContent = savedFolder.name;
+                        } else if (parentIcon.dataset.memoId) {
+                            const response = await fetch(`/memos/${parentIcon.dataset.memoId}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-Token': csrfToken,
+                                },
+                                body: JSON.stringify({
+                                    memo: {
+                                        title: newName,
+                                    },
+                                }),
+                            });
+                            const savedMemo = await response.json();
+                            nameSpan.textContent = savedMemo.title;
+                        }
 
-                        nameSpan.textContent = savedFolder.name;
                         if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
                     }
 
@@ -147,7 +166,7 @@ document.addEventListener('turbo:load', function () {
 
                     return;
                 }
-                //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
+                                        //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
 
                 // 「childIcon」を再取得。
                 const childIcon = e.target.closest('.folder-icon');
