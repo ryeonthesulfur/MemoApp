@@ -1,9 +1,16 @@
 // このファイルは、フォルダの無限カラム表示(クリックした分だけ右にパネルが展開する)、カラム内でのフォルダ新規作成・名前変更(いずれも保存込み)を担当
+//
+// 目次
+// ① メインパネルのフォルダアイコンをクリックした時の入口
+// ② 子フォルダを開いた際のパネルを作る本体の関数
+// ③ 開いた子フォルダのカラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
+// ④ このカラムの中に新規フォルダを作成する機能
+// ⑤ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(タイトル変更・子フォルダのメモを開く・フォルダを展開)
+// ⑥ 子フォルダのパネル上部のボタン(閉じる・追加メニュー開閉・新規メモ作成)
 import {getRefs} from "window"
 
 document.addEventListener('turbo:load', function () {
-    const { icon_container } = getRefs();
-    const folder_columns_container = document.getElementById('folder_columns_container');
+    const { icon_container, folder_panel: folder_columns_container } = getRefs();
     // select.js が window.folder_columns_container を見に来るので、window に載せておく
     window.folder_columns_container = folder_columns_container;
 
@@ -24,7 +31,7 @@ document.addEventListener('turbo:load', function () {
         createFolderColumn(icon.dataset.folderId, null);
 
         // ============================================================
-        // ◆ ② パネルを作る本体の関数   
+        // ◆ ②　子フォルダを開いた際のパネルを作る本体の関数   
         // ============================================================
         // クリックされたフォルダの id を受け取り、その中身のためのパネルを生成する。
         async function createFolderColumn(folderId, afterColumn) {
@@ -46,7 +53,7 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ③ カラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
+            // ◆ ③ 開いた子フォルダのカラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
             // ============================================================
             // 選択したフォルダの中身を表すためのパネルを「column」とする。
             const column = document.createElement('div');
@@ -72,7 +79,7 @@ document.addEventListener('turbo:load', function () {
             folder_columns_container.appendChild(column);
 
 
-            // 「folder_show_content」の中に子フォルダが入るようにする。
+            // 子フォルダパネルである「folder_show_content」の中にフォルダが入るようにする。
             const folderShowContent = column.querySelector('.folder_show_content');
 
             folder.children.forEach(function (child) {
@@ -86,7 +93,7 @@ document.addEventListener('turbo:load', function () {
                 folderShowContent.appendChild(childIcon);
             });
 
-            // ▲▲▲ このフォルダの中にあるメモも、子フォルダと同じようにアイコンとして並べる
+            // ▼▼▼ 子フォルダの中にあるメモも、フォルダと同じようにアイコンとして並べる
             folder.memos.forEach(function (memo) {
                 const memoIcon = document.createElement('div');
                 memoIcon.classList.add('folder-icon');
@@ -100,7 +107,61 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ④ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
+            // ◆ ④ このカラムの中に新規フォルダを作成する機能
+            // ============================================================
+            // 選択して開いたフォルダパネルの中に新規フォルダを作成する機能。
+            const folderBtn = column.querySelectorAll('.new_items')[1];
+            folderBtn.addEventListener('click', function () {
+                const new_folder = document.createElement('div');
+                new_folder.classList.add('folder-icon');
+                new_folder.innerHTML = `
+                    <span class="material-symbols-outlined color-blue">folder</span>
+                    <input type="text" class="folder-name-input" value="新規フォルダ">
+                `;
+                folderShowContent.appendChild(new_folder);
+
+                // 作った直後は名前を入力できる状態にしておく
+                const nameInput = new_folder.querySelector('.folder-name-input');
+                nameInput.focus();
+                nameInput.select();
+
+                // 入力欄からフォーカスが外れる/Enterで、入力欄を通常の文字表示に戻す
+                async function finishEditing() {
+                    const newName = nameInput.value || '新規フォルダ';
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                    const response = await fetch('/folders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            folder: {
+                                name: newName,
+                                parent_id: folderId,
+                        },
+                    }),
+                });
+                const savedFolder = await response.json();
+
+                new_folder.dataset.folderId = savedFolder.id;
+
+                const nameSpan = document.createElement('span');
+                nameSpan.classList.add('folder-name');
+                nameSpan.textContent = savedFolder.name;
+                if (nameInput.parentNode) new_folder.replaceChild(nameSpan, nameInput);
+            }
+
+            nameInput.addEventListener('blur', finishEditing);
+            nameInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') finishEditing();
+            });
+        });
+
+
+            // ============================================================
+            // ◆ ⑤ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
             // ============================================================
             // ▼▼▼タイトル編集の際の記述▼▼▼
             folderShowContent.addEventListener('click', function (e) {
@@ -187,7 +248,7 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ⑤ カラム上部のボタン(閉じる・追加メニュー開閉・メモ作成)
+            // ◆ ⑥ 子フォルダのパネル上部のボタン(閉じる・追加メニュー開閉・新規メモ作成)
             // ============================================================
             // メモ・フォルダ追加ボタン、閉じるボタンのための要素取得
             const closeButton = column.querySelector('.close_button');
@@ -211,71 +272,20 @@ document.addEventListener('turbo:load', function () {
                 memoSelect.classList.toggle('show');
             });
 
-            // ▲▲▲ このカラムの中で「メモ」を選んだら、このフォルダのidを覚えておいてメモ編集パネルを開く
+
+            // ▼▼▼ 子フォルダ内での新規メモ作成 ▼▼▼
+            //　その時に開いている子フォルダのパネルの中で「+」→「メモ」を選んだら、そのフォルダのidを覚えておいてメモパネルを開く
             const memoBtn = newItems[0];
-            const memo_panel = document.getElementById('memo_panel');
+            const { memo_panel } = getRefs();
             memoBtn.addEventListener('click', function () {
-                // memo_saving.js がメモ保存時にこれを読みに来るので、window に載せておく
-                window.currentColumnFolderId = folderId;
-                memo_panel.classList.add('show');
+                // memo_saving.js がメモ保存時にこのフォルダ id を読みに来るので、window に載せておく
+                window.currentColumnFolderId = folderId;    //保存ボタンを押した時に、どのフォルダの中に保存するかを決めるための共有変数。「memo_saving.js」がこれを読み取りに来る。
+
+                memo_panel.classList.add('show');   // メモパネルを開く、その後の保存処理は memo_saving.js に任せる。
                 newItems.forEach(item => item.classList.remove('show'));
                 orItem.classList.remove('show');
                 memoSelect.classList.remove('show');
             });
-
-
-            // ============================================================
-            // ◆ ⑥ このカラムの中に新規フォルダを作成する機能
-            // ============================================================
-            // 選択して開いたフォルダパネルの中に新規フォルダを作成する機能。
-            const folderBtn = newItems[1];
-            folderBtn.addEventListener('click', function () {
-                const new_folder = document.createElement('div');
-                new_folder.classList.add('folder-icon');
-                new_folder.innerHTML = `
-                    <span class="material-symbols-outlined color-blue">folder</span>
-                    <input type="text" class="folder-name-input" value="新規フォルダ">
-                `;
-                folderShowContent.appendChild(new_folder);
-
-                // 作った直後は名前を入力できる状態にしておく
-                const nameInput = new_folder.querySelector('.folder-name-input');
-                nameInput.focus();
-                nameInput.select();
-
-                // 入力欄からフォーカスが外れる/Enterで、入力欄を通常の文字表示に戻す
-                async function finishEditing() {
-                    const newName = nameInput.value || '新規フォルダ';
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-                    const response = await fetch('/folders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-Token': csrfToken,
-                        },
-                        body: JSON.stringify({
-                            folder: {
-                                name: newName,
-                                parent_id: folderId,
-                        },
-                    }),
-                });
-                const savedFolder = await response.json();
-
-                new_folder.dataset.folderId = savedFolder.id;
-
-                const nameSpan = document.createElement('span');
-                nameSpan.classList.add('folder-name');
-                nameSpan.textContent = savedFolder.name;
-                if (nameInput.parentNode) new_folder.replaceChild(nameSpan, nameInput);
-            }
-
-            nameInput.addEventListener('blur', finishEditing);
-            nameInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') finishEditing();
-            });
-        });
         }
     });
 });
