@@ -4,6 +4,8 @@ import {getRefs} from "window"
 document.addEventListener('turbo:load', function () {
     const { icon_container } = getRefs();
     const folder_columns_container = document.getElementById('folder_columns_container');
+    // select.js が window.folder_columns_container を見に来るので、window に載せておく
+    window.folder_columns_container = folder_columns_container;
 
     // ============================================================
     // ◆ ① メインパネルのフォルダアイコンをクリックした時の入口
@@ -98,10 +100,11 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ④ カラムの中のアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
+            // ◆ ④ 子フォルダの中のアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
             // ============================================================
             // 無限入れ子構造のための記述
             folderShowContent.addEventListener('click', function (e) {
+                if (window.isSelecting) return; // 選択モード中は、フォルダを開いたりメモを開いたりしない
                 // もしアイコンの下のタイトルをクリックしたら、無反応。
                 // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
                 if (e.target.classList.contains('folder-name')) {
@@ -144,6 +147,7 @@ document.addEventListener('turbo:load', function () {
 
                     return;
                 }
+                //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
 
                 // 「childIcon」を再取得。
                 const childIcon = e.target.closest('.folder-icon');
@@ -192,6 +196,7 @@ document.addEventListener('turbo:load', function () {
             const memoBtn = newItems[0];
             const memo_panel = document.getElementById('memo_panel');
             memoBtn.addEventListener('click', function () {
+                // memo_saving.js がメモ保存時にこれを読みに来るので、window に載せておく
                 window.currentColumnFolderId = folderId;
                 memo_panel.classList.add('show');
                 newItems.forEach(item => item.classList.remove('show'));

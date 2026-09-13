@@ -8,9 +8,9 @@ document.addEventListener('turbo:load', function () {
 
   // getRefs() を呼んで、必要な要素をまとめて受け取る(分割代入)
   const {
-    memo,          // メモ一覧の箱(クリックでパネル開閉に使う)
-    panel,         // #main_panel (フォルダ/メモの一覧パネル)
-    header_title,  // ヘッダーのタイトル文字
+    memo,          // 「憶」(クリックでメインパネル開閉に使う)
+    panel,         // メインパネル (フォルダ/メモの一覧パネル)
+    header_title,  // ヘッダーのタイトル文字「記憶」
     memo_select,   // 「メモ or フォルダ」の選択メニュー
     add_btn,       // 右下などにある「+」ボタン
     new_items,     // 「メモ」「フォルダ」の選択肢(li要素2つ)
@@ -42,6 +42,7 @@ document.addEventListener('turbo:load', function () {
   window.icon_container = icon_container;
 
   // ▲▲▲ 「今、どのフォルダの中でメモを作ろうとしてるか」を覚えておく共有変数。nullならルート直下(メインパネル)向け
+  // memo_saving.js がメモ保存時にこれを読みに来るので、window に載せておく
   window.currentColumnFolderId = null;
 
   // 「+」ボタンで開いた「メモ or フォルダ」の選択メニューを閉じる処理(共通化してまとめてある)
@@ -51,7 +52,7 @@ document.addEventListener('turbo:load', function () {
     memo_select.classList.remove('show');
   }
 
-  // メモ一覧をクリックしたら、パネルの開閉を切り替える
+  // 「憶」をクリックしたら、パネルの開閉を切り替える
   memo.addEventListener('click', function () {
     if (panel.classList.contains('show') || memo_panel.classList.contains('show')) {
       // すでに開いてるなら閉じる
@@ -97,15 +98,8 @@ document.addEventListener('turbo:load', function () {
 
   // アイコン置き場全体のクリックを1箇所で監視(イベント委譲)
   window.icon_container.addEventListener('click', function (e) {
-    // 選択モード中は、クリックでチェックボックスをON/OFFするだけ
-    if (window.isSelecting) {
-      const icon = e.target.closest('.folder-icon');
-      if (icon && e.target.type !== 'checkbox') {
-        const checkbox = icon.querySelector('.select-checkbox');
-        if (checkbox) checkbox.checked = !checkbox.checked;
-      }
-      return;
-    }
+    // 選択モード中のチェックボックス反転は select.js が担当するので、ここでは名前編集に進まないよう止めるだけ
+    if (window.isSelecting) return;
 
     // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
     if (e.target.classList.contains('folder-name')) {

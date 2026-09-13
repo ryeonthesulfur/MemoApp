@@ -6,10 +6,33 @@ document.addEventListener('turbo:load', function () {
   window.action_bar = document.querySelector('#action_bar'); // 画面下の「移動/コピー/削除/共有」バー
   window.isSelecting = false; // 今、選択モード中かどうかのフラグ
 
+  // 「メインパネル + 開いてる全カラム」のアイコンをまとめて取得する共通処理
+  function getAllIcons() {
+    return [
+      ...window.icon_container.querySelectorAll('.folder-icon'),
+      ...window.folder_columns_container.querySelectorAll('.folder-icon'),
+    ];
+  }
+
+  // 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+  // 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
+  // application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
+  // このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
+  // なので、常に存在している document に1つだけ付けて代用する。
+  document.addEventListener('click', function (e) {
+    if (!window.isSelecting) return;
+    const icon = e.target.closest('.folder-icon');
+    if (icon && e.target.type !== 'checkbox') {
+      const checkbox = icon.querySelector('.select-checkbox');
+      if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+  });
+
   // 選択モードをオフにする共通処理(チェックボックスを全部消して、バーを隠す)
+  // top.js が「憶」ボタンや「+」ボタンを押した時にこれを呼びに来るので、window に載せておく
   window.turnOffSelectMode = function () {
     window.isSelecting = false;
-    window.icon_container.querySelectorAll('.folder-icon').forEach(icon => {
+    getAllIcons().forEach(icon => {
       icon.classList.remove('selecting');
       const checkbox = icon.querySelector('.select-checkbox');
       if (checkbox) checkbox.remove();
@@ -17,11 +40,11 @@ document.addEventListener('turbo:load', function () {
     window.action_bar.classList.remove('show');
   };
 
-  // 「選択」ボタンを押すたびに、選択モードのON/OFFを切り替える
+  // 「選択」（手のひら）ボタンを押すたびに、選択モードのON/OFFを切り替える
   select_btn.addEventListener('click', function () {
     window.isSelecting = !window.isSelecting;
     window.action_bar.classList.toggle('show');
-    const icons = window.icon_container.querySelectorAll('.folder-icon');
+    const icons = getAllIcons();
 
     if (window.isSelecting) {
       // ONにした時: 全アイコンにチェックボックスを付ける
@@ -41,7 +64,7 @@ document.addEventListener('turbo:load', function () {
   // 「削除」ボタン: チェックが付いてるアイコンを、サーバー側も含めて削除する
   const delete_btn = document.getElementById('delete_btn');
   delete_btn.addEventListener('click', async function () {
-    const icons = window.icon_container.querySelectorAll('.folder-icon');
+    const icons = getAllIcons();
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     for (const icon of icons) {
@@ -63,7 +86,7 @@ document.addEventListener('turbo:load', function () {
   // 「コピー」ボタン: チェックが付いてるアイコンを複製する
   const copy_btn = document.getElementById('copy_btn');
   copy_btn.addEventListener('click', function () {
-    const icons = window.icon_container.querySelectorAll('.folder-icon');
+    const icons = getAllIcons();
     icons.forEach(icon => {
       const checkbox = icon.querySelector('.select-checkbox');
       if (checkbox && checkbox.checked) {

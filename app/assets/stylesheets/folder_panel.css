@@ -19,12 +19,20 @@
     overflow: hidden; /* 長いフォルダ名がこの幅を超えたらはみ出た部分を隠す */
     white-space: nowrap; /* 長いフォルダ名でも折り返さず1行のままにする */
     text-overflow: ellipsis; /* 隠れて見えなくなった部分を「…」で表現する */
+    margin-left: 0.83vw; /* 10px。閉じるボタンとの間に少しだけスペースを空ける */
 }
 
 /* フォルダパネル内の閉じるボタンと追加ボタンラッパーの共通スタイル */
 /* カラムそのものを閉じる(column.remove()する)ための「閉じる」ボタン */
 .close_button {
     flex-shrink: 0; /* .folder_name_label が伸びても、このボタンだけは幅を縮められないようにする */
+}
+
+/* カラムの「閉じる」ボタンだけを小さくする(.close_button は show_panel.css のメモ詳細パネルとも共有してるクラス名なので、
+   .folder_buttons_header の中限定のセレクタにして、メモ詳細パネル側には影響しないようにする) */
+.folder_buttons_header .close_button {
+    font-size: 0.8vw; /* 12px */
+    padding: 0.16vw 0.52vw; /* 3px 10px */
 }
 
 /* フォルダパネル内の追加ボタンラッパー */
