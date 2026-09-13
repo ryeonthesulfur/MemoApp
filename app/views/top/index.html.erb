@@ -1,5 +1,7 @@
+<%# メインパネル全体。フォルダ/メモの一覧と、新規作成・選択モードのボタン類をまとめた箱(top.jsが開閉を担当) %>
 <div id="main_panel">
   <div id="main_panel_inner">
+    <%# 「+」ボタンと、そこから開く「メモ or フォルダ」選択メニュー(top.js・folder_saving.js・memo_saving.jsが担当) %>
     <div class="add_menu_wrapper">
       <button id="add_btn">+</button>
       <ul id="memo_select" class="memo_select">
@@ -9,14 +11,17 @@
       </ul>
     </div>
 
+    <%# 選択モードのON/OFFを切り替える、手のひらアイコンのボタン(select.jsが担当) %>
     <div class="select_menu_wrapper">
       <button id="select_btn">
         <span class="material-symbols-outlined checklist">pan_tool</span>
       </button>
     </div>
 
+    <%# メインパネルのフォルダ/メモアイコンが並ぶ置き場(top.js・show_panel.js・select.jsがクリックを監視) %>
     <div class="icon-container" id="icon_container">
 
+      <%# ルート直下(どのフォルダにも属さない)のフォルダを、DBから取ってきて1個ずつアイコンとして表示 %>
       <% @folders.each do |folder| %>
       <div class="folder-icon" data-folder-id="<%= folder.id =%>">
         <span class="material-symbols-outlined color-blue">folder</span>
@@ -24,6 +29,7 @@
       </div>
       <% end %>
 
+      <%# ルート直下のメモを、同じくDBから取ってきて1個ずつアイコンとして表示 %>
       <% @memos.each do |memo| %>
       <div class="folder-icon" data-memo-id="<%= memo.id %>">
         <span class="material-symbols-outlined color-blue">description</span>
@@ -33,6 +39,7 @@
     </div>
   </div>
 
+<%# 選択モード中に画面下に表示される、「移動/コピー/削除/共有」のアクションバー(select.jsが担当) %>
 <div id="action_bar">
     <span class="material-symbols-outlined" id="move_btn">drive_file_move</span>
     <span class="material-symbols-outlined" id="copy_btn">content_copy</span>
@@ -42,10 +49,12 @@
 </div>
 
 
+<%# フォルダを開くたびに右に増えていく「カラム」の入れ物。中身は最初は空で、folder_columns.jsがJSで動的に追加していく %>
 <div id="folder_columns_container">
 </div>
 
 
+<%# 新規メモの作成・編集用パネル(タイトル・本文の入力欄)。top.js・folder_columns.jsから開かれ、memo_saving.jsが保存を担当 %>
 <div id="memo_panel">
   <form class="panel-form">
     <div class="form_group">
@@ -66,6 +75,7 @@
 </div>
 
 
+<%# 既存のメモをクリックした時に開く、詳細表示・編集パネル(memo_panelとは別物、show_panel.jsが担当) %>
 <div id="main_show_panel">
   <div class="show_panel">
     <div class="buttons_header">
@@ -83,4 +93,5 @@
 </div>
 
 
+<%# BGM再生用のaudio要素(top.jsが、Enterキー押下時の再生開始を担当) %>
 <audio id="bgm" src="/bgm.wav" loop></audio>
