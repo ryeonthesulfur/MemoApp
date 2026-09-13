@@ -147,6 +147,7 @@ document.addEventListener('turbo:load', function () {
 
                     return;
                 }
+                //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
 
                 // 「childIcon」を再取得。
                 const childIcon = e.target.closest('.folder-icon');
