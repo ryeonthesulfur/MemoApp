@@ -1,9 +1,16 @@
 // このファイルは、フォルダの無限カラム表示(クリックした分だけ右にパネルが展開する)、カラム内でのフォルダ新規作成・名前変更(いずれも保存込み)を担当
+//
+// 目次
+// ① メインパネルのフォルダアイコンをクリックした時の入口
+// ② 子フォルダを開いた際のパネルを作る本体の関数
+// ③ 開いた子フォルダのカラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
+// ④ このカラムの中に新規フォルダを作成する機能
+// ⑤ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(タイトル変更・子フォルダのメモを開く・フォルダを展開)
+// ⑥ 子フォルダのパネル上部のボタン(閉じる・追加メニュー開閉・新規メモ作成)
 import {getRefs} from "window"
 
 document.addEventListener('turbo:load', function () {
-    const { icon_container } = getRefs();
-    const folder_columns_container = document.getElementById('folder_columns_container');
+    const { icon_container, folder_panel: folder_columns_container } = getRefs();
     // select.js が window.folder_columns_container を見に来るので、window に載せておく
     window.folder_columns_container = folder_columns_container;
 
@@ -24,7 +31,7 @@ document.addEventListener('turbo:load', function () {
         createFolderColumn(icon.dataset.folderId, null);
 
         // ============================================================
-        // ◆ ② パネルを作る本体の関数   
+        // ◆ ②　子フォルダを開いた際のパネルを作る本体の関数   
         // ============================================================
         // クリックされたフォルダの id を受け取り、その中身のためのパネルを生成する。
         async function createFolderColumn(folderId, afterColumn) {
@@ -46,7 +53,7 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ③ カラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
+            // ◆ ③ 開いた子フォルダのカラムの見た目を組み立て、中に子フォルダ・メモのアイコンを並べる
             // ============================================================
             // 選択したフォルダの中身を表すためのパネルを「column」とする。
             const column = document.createElement('div');
@@ -72,7 +79,7 @@ document.addEventListener('turbo:load', function () {
             folder_columns_container.appendChild(column);
 
 
-            // 「folder_show_content」の中に子フォルダが入るようにする。
+            // 子フォルダパネルである「folder_show_content」の中にフォルダが入るようにする。
             const folderShowContent = column.querySelector('.folder_show_content');
 
             folder.children.forEach(function (child) {
@@ -86,7 +93,7 @@ document.addEventListener('turbo:load', function () {
                 folderShowContent.appendChild(childIcon);
             });
 
-            // ▲▲▲ このフォルダの中にあるメモも、子フォルダと同じようにアイコンとして並べる
+            // ▼▼▼ 子フォルダの中にあるメモも、フォルダと同じようにアイコンとして並べる
             folder.memos.forEach(function (memo) {
                 const memoIcon = document.createElement('div');
                 memoIcon.classList.add('folder-icon');
@@ -100,116 +107,10 @@ document.addEventListener('turbo:load', function () {
 
 
             // ============================================================
-            // ◆ ④ 子フォルダの中のアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
-            // ============================================================
-            // 無限入れ子構造のための記述
-            folderShowContent.addEventListener('click', function (e) {
-                if (window.isSelecting) return; // 選択モード中は、フォルダを開いたりメモを開いたりしない
-                // もしアイコンの下のタイトルをクリックしたら、無反応。
-                // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
-                if (e.target.classList.contains('folder-name')) {
-                    const nameSpan = e.target;
-                    const parentIcon = nameSpan.parentElement;
-                    const nameInput = document.createElement('input');
-                    nameInput.type = 'text';
-                    nameInput.value = nameSpan.textContent;
-                    nameInput.classList.add('folder-name-input');
-                    parentIcon.replaceChild(nameInput, nameSpan);
-                    nameInput.focus();
-                    nameInput.select();
-
-                    async function finishEditing() {
-                        const newName = nameInput.value || nameSpan.textContent;
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-                        const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-Token': csrfToken,
-                            },
-                            body: JSON.stringify({
-                                folder: {
-                                    name: newName,
-                                },
-                            }),
-                        });
-                        const savedFolder = await response.json();
-
-                        nameSpan.textContent = savedFolder.name;
-                        if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
-                    }
-
-                    nameInput.addEventListener('blur', finishEditing);
-                    nameInput.addEventListener('keydown', function (e) {
-                        if (e.key === 'Enter') finishEditing();
-                    });
-
-                    return;
-                }
-                //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
-
-                // 「childIcon」を再取得。
-                const childIcon = e.target.closest('.folder-icon');
-                if (!childIcon) return;
-
-                // ▲▲▲ クリックされたのがメモのアイコンだったら、メモ詳細を開いて終わり(フォルダを開く処理には進まない)
-                if (childIcon.dataset.memoId) {
-                    window.openMemoDetail(childIcon.dataset.memoId);
-                    return;
-                }
-
-                // フォルダじゃないアイコンをクリックした場合は無反応。
-                if (!childIcon.dataset.folderId) return;
-
-                // パネル生成のための関数にクリックした子フォルダの id を仮引数として渡す。
-                createFolderColumn(childIcon.dataset.folderId, column);
-            });
-
-
-            // ============================================================
-            // ◆ ⑤ カラム上部のボタン(閉じる・追加メニュー開閉・メモ作成)
-            // ============================================================
-            // メモ・フォルダ追加ボタン、閉じるボタンのための要素取得
-            const closeButton = column.querySelector('.close_button');
-            const addBtn = column.querySelector('.folder_add_btn');
-            const memoSelect = column.querySelector('.memo_select');
-            const newItems = column.querySelectorAll('.new_items');
-            const orItem = column.querySelector('.or_item');
-
-            // 閉じるボタン
-            closeButton.addEventListener('click', function () {
-                while (column.nextElementSibling) {
-                    column.nextElementSibling.remove();
-                }
-                column.remove();
-            });
-
-            // 追加ボタン
-            addBtn.addEventListener('click', function () {
-                newItems.forEach(item => item.classList.toggle('show'));
-                orItem.classList.toggle('show');
-                memoSelect.classList.toggle('show');
-            });
-
-            // ▲▲▲ このカラムの中で「メモ」を選んだら、このフォルダのidを覚えておいてメモ編集パネルを開く
-            const memoBtn = newItems[0];
-            const memo_panel = document.getElementById('memo_panel');
-            memoBtn.addEventListener('click', function () {
-                // memo_saving.js がメモ保存時にこれを読みに来るので、window に載せておく
-                window.currentColumnFolderId = folderId;
-                memo_panel.classList.add('show');
-                newItems.forEach(item => item.classList.remove('show'));
-                orItem.classList.remove('show');
-                memoSelect.classList.remove('show');
-            });
-
-
-            // ============================================================
-            // ◆ ⑥ このカラムの中に新規フォルダを作成する機能
+            // ◆ ④ このカラムの中に新規フォルダを作成する機能
             // ============================================================
             // 選択して開いたフォルダパネルの中に新規フォルダを作成する機能。
-            const folderBtn = newItems[1];
+            const folderBtn = column.querySelectorAll('.new_items')[1];
             folderBtn.addEventListener('click', function () {
                 const new_folder = document.createElement('div');
                 new_folder.classList.add('folder-icon');
@@ -257,6 +158,134 @@ document.addEventListener('turbo:load', function () {
                 if (e.key === 'Enter') finishEditing();
             });
         });
+
+
+            // ============================================================
+            // ◆ ⑤ 子フォルダの中のタイトルまたはアイコンをクリックした時の処理(名前変更・メモを開く・フォルダを展開)
+            // ============================================================
+            // ▼▼▼タイトル編集の際の記述▼▼▼
+            folderShowContent.addEventListener('click', function (e) {
+                if (window.isSelecting) return; // 選択モード中は、フォルダを開いたりメモを開いたりしない
+                // ▲もしアイコンの下のタイトルをクリックしたら、無反応。
+
+                // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
+                if (e.target.classList.contains('folder-name')) {
+                    const nameSpan = e.target;
+                    const parentIcon = nameSpan.parentElement;
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.value = nameSpan.textContent;
+                    nameInput.classList.add('folder-name-input');
+                    parentIcon.replaceChild(nameInput, nameSpan);
+                    nameInput.focus();
+                    nameInput.select();
+
+                    async function finishEditing() {
+                        const newName = nameInput.value || nameSpan.textContent;
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                        // ▲▲▲ クリックしたのがフォルダかメモかで、編集したタイトルの送信先とレスポンスの受け取り方を変える
+                        if (parentIcon.dataset.folderId) {
+                            const response = await fetch(`/folders/${parentIcon.dataset.folderId}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-Token': csrfToken,
+                                },
+                                body: JSON.stringify({
+                                    folder: {
+                                        name: newName,
+                                    },
+                                }),
+                            });
+                            const savedFolder = await response.json();
+                            nameSpan.textContent = savedFolder.name;
+                        } else if (parentIcon.dataset.memoId) {
+                            const response = await fetch(`/memos/${parentIcon.dataset.memoId}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-Token': csrfToken,
+                                },
+                                body: JSON.stringify({
+                                    memo: {
+                                        title: newName,
+                                    },
+                                }),
+                            });
+                            const savedMemo = await response.json();
+                            nameSpan.textContent = savedMemo.title;
+                        }
+
+                        if (nameInput.parentNode) parentIcon.replaceChild(nameSpan, nameInput);
+                    }
+
+                    nameInput.addEventListener('blur', finishEditing);
+                    nameInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') finishEditing();
+                    });
+
+                    return;
+                }
+                                        //▲▲▲ここまでが小フォルダ内でのタイトル編集の機能▲▲▲
+
+                // 「childIcon」を再取得。
+                const childIcon = e.target.closest('.folder-icon');
+                if (!childIcon) return;
+
+                // ▲▲▲ クリックされたのがメモのアイコンだったら、メモ詳細を開いて終わり(フォルダを開く処理には進まない)
+                if (childIcon.dataset.memoId) {
+                    window.openMemoDetail(childIcon.dataset.memoId);
+                    return;
+                }
+
+                // フォルダじゃないアイコンをクリックした場合は無反応。
+                if (!childIcon.dataset.folderId) return;
+
+                // パネル生成のための関数にクリックした子フォルダの id を仮引数として渡す。
+                createFolderColumn(childIcon.dataset.folderId, column);
+            });
+
+
+            // ============================================================
+            // ◆ ⑥ 子フォルダのパネル上部のボタン(閉じる・追加メニュー開閉・新規メモ作成)
+            // ============================================================
+            // メモ・フォルダ追加ボタン、閉じるボタンのための要素取得
+            const closeButton = column.querySelector('.close_button');
+            const addBtn = column.querySelector('.folder_add_btn');
+            const memoSelect = column.querySelector('.memo_select');
+            const newItems = column.querySelectorAll('.new_items');
+            const orItem = column.querySelector('.or_item');
+
+            // 閉じるボタン
+            closeButton.addEventListener('click', function () {
+                while (column.nextElementSibling) {
+                    column.nextElementSibling.remove();
+                }
+                column.remove();
+            });
+
+            // 追加ボタン
+            addBtn.addEventListener('click', function () {
+                newItems.forEach(item => item.classList.toggle('show'));
+                orItem.classList.toggle('show');
+                memoSelect.classList.toggle('show');
+            });
+
+
+            // ▼▼▼ 子フォルダ内での新規メモ作成 ▼▼▼
+            //　その時に開いている子フォルダのパネルの中で「+」→「メモ」を選んだら、そのフォルダのidを覚えておいてメモパネルを開く
+            const memoBtn = newItems[0];
+            const { memo_panel } = getRefs();
+            memoBtn.addEventListener('click', function () {
+                // memo_saving.js がメモ保存時にこのフォルダ id を読みに来るので、window に載せておく
+                window.currentColumnFolderId = folderId;    //保存ボタンを押した時に、どのフォルダの中に保存するかを決めるための共有変数。「memo_saving.js」がこれを読み取りに来る。
+
+                memo_panel.classList.add('show');   // メモパネルを開く、その後の保存処理は memo_saving.js に任せる。
+                newItems.forEach(item => item.classList.remove('show'));
+                orItem.classList.remove('show');
+                memoSelect.classList.remove('show');
+            });
         }
     });
 });

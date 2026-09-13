@@ -1,12 +1,28 @@
 // このファイルは「選択モード」(アイコンにチェックボックスを出して、まとめて移動/コピー/削除/共有する機能)を担当
+//
+// 目次
+// ① 必要なDOM要素の取得・共有フラグ/バーの初期化
+// ② 「メインパネル + 開いてる全カラム」のアイコンをまとめて取得する共通処理
+// ③ 選択モードをオフにする共通処理
+// ④ 「選択」ボタンでON/OFFを切り替える処理
+// ⑤ 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+// ⑥ 「削除」ボタンの処理
+// ⑦ 「コピー」ボタンの処理
+
+
 document.addEventListener('turbo:load', function () {
+  // ============================================================
+  // ◆ ① 必要なDOM要素の取得・共有フラグ/バーの初期化
+  // ============================================================
   const select_btn = document.getElementById('select_btn'); // 手のマークの「選択」ボタン
 
   // action_bar・isSelecting・turnOffSelectMode は、top.js からも参照するので window に載せて共有する
   window.action_bar = document.querySelector('#action_bar'); // 画面下の「移動/コピー/削除/共有」バー
   window.isSelecting = false; // 今、選択モード中かどうかのフラグ
 
-  // 「メインパネル + 開いてる全カラム」のアイコンをまとめて取得する共通処理
+  // ============================================================
+  // ◆ ② 「メインパネル + 開いてる全カラム」のアイコンをまとめて取得する共通処理
+  // ============================================================
   function getAllIcons() {
     return [
       ...window.icon_container.querySelectorAll('.folder-icon'),
@@ -14,21 +30,10 @@ document.addEventListener('turbo:load', function () {
     ];
   }
 
-  // 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
-  // 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
-  // application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
-  // このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
-  // なので、常に存在している document に1つだけ付けて代用する。
-  document.addEventListener('click', function (e) {
-    if (!window.isSelecting) return;
-    const icon = e.target.closest('.folder-icon');
-    if (icon && e.target.type !== 'checkbox') {
-      const checkbox = icon.querySelector('.select-checkbox');
-      if (checkbox) checkbox.checked = !checkbox.checked;
-    }
-  });
-
-  // 選択モードをオフにする共通処理(チェックボックスを全部消して、バーを隠す)
+  // ============================================================
+  // ◆ ③ 選択モードをオフにする共通処理
+  // ============================================================
+  // チェックボックスを全部消して、バーを隠す
   // top.js が「憶」ボタンや「+」ボタンを押した時にこれを呼びに来るので、window に載せておく
   window.turnOffSelectMode = function () {
     window.isSelecting = false;
@@ -40,6 +45,9 @@ document.addEventListener('turbo:load', function () {
     window.action_bar.classList.remove('show');
   };
 
+  // ============================================================
+  // ◆ ④ 「選択」ボタンでON/OFFを切り替える処理
+  // ============================================================
   // 「選択」（手のひら）ボタンを押すたびに、選択モードのON/OFFを切り替える
   select_btn.addEventListener('click', function () {
     window.isSelecting = !window.isSelecting;
@@ -61,7 +69,26 @@ document.addEventListener('turbo:load', function () {
     }
   });
 
-  // 「削除」ボタン: チェックが付いてるアイコンを、サーバー側も含めて削除する
+  // ============================================================
+  // ◆ ⑤ 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+  // ============================================================
+  // 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
+  // application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
+  // このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
+  // なので、常に存在している document に1つだけ付けて代用する。
+  document.addEventListener('click', function (e) {
+    if (!window.isSelecting) return;
+    const icon = e.target.closest('.folder-icon');
+    if (icon && e.target.type !== 'checkbox') {
+      const checkbox = icon.querySelector('.select-checkbox');
+      if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+  });
+
+  // ============================================================
+  // ◆ ⑥ 「削除」ボタンの処理
+  // ============================================================
+  // チェックが付いてるアイコンを、サーバー側も含めて削除する
   const delete_btn = document.getElementById('delete_btn');
   delete_btn.addEventListener('click', async function () {
     const icons = getAllIcons();
@@ -83,7 +110,10 @@ document.addEventListener('turbo:load', function () {
     window.turnOffSelectMode();
   });
 
-  // 「コピー」ボタン: チェックが付いてるアイコンを複製する
+  // ============================================================
+  // ◆ ⑦ 「コピー」ボタンの処理
+  // ============================================================
+  // チェックが付いてるアイコンを複製する
   const copy_btn = document.getElementById('copy_btn');
   copy_btn.addEventListener('click', function () {
     const icons = getAllIcons();

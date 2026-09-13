@@ -1,14 +1,23 @@
 // このファイルは、メインパネルでの新規フォルダの作成(POST /folders)を担当
+//
+// 目次
+// ① 必要なDOM要素・色候補の準備
+// ② 「フォルダ」を選んだ時の処理本体(見た目だけのアイコン作成 → 保存 → 確定表示への切り替え)
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {
+  // ============================================================
+  // ◆ ① 必要なDOM要素・色候補の準備
+  // ============================================================
   const { icon_container, new_items } = getRefs();
   const folder_btn = new_items[1];
-
 
     // フォルダアイコンの色をランダムで選ぶための候補
   const colors = ['color-blue', 'color-red', 'color-green', 'color-yellow'];
 
+  // ============================================================
+  // ◆ ② 「フォルダ」を選んだ時の処理本体
+  // ============================================================
   // 「フォルダ」を選んだら、新しいフォルダのアイコンをその場で作る(まだ保存はしていない、見た目だけ)
   folder_btn.addEventListener('click', function () {
     const new_folder = document.createElement('div');
