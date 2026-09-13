@@ -98,15 +98,8 @@ document.addEventListener('turbo:load', function () {
 
   // アイコン置き場全体のクリックを1箇所で監視(イベント委譲)
   window.icon_container.addEventListener('click', function (e) {
-    // 選択モード中は、クリックでチェックボックスをON/OFFするだけ
-    if (window.isSelecting) {
-      const icon = e.target.closest('.folder-icon');
-      if (icon && e.target.type !== 'checkbox') {
-        const checkbox = icon.querySelector('.select-checkbox');
-        if (checkbox) checkbox.checked = !checkbox.checked;
-      }
-      return;
-    }
+    // 選択モード中のチェックボックス反転は select.js が担当するので、ここでは名前編集に進まないよう止めるだけ
+    if (window.isSelecting) return;
 
     // 選択モードじゃない時、名前部分をクリックしたら名前をその場で編集できるようにする
     if (e.target.classList.contains('folder-name')) {
