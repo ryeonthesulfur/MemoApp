@@ -149,6 +149,7 @@ document.addEventListener('turbo:load', function () {
       async function finishEditing() {
         const newName = nameInput.value || nameSpan.textContent;
 
+        // メインパネル内のフォルダタイトル変更処理
         if (parentIcon.dataset.folderId) {
            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -166,6 +167,8 @@ document.addEventListener('turbo:load', function () {
         });
         const savedFolder = await response.json();
         nameSpan.textContent = savedFolder.name;
+
+        // メインパネル内のメモタイトル変更処理
       } else if (parentIcon.dataset.memoId) {
          const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
