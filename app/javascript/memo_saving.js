@@ -1,9 +1,16 @@
 // このファイルは、新規メモの保存(POST /memos)を担当
 // window.js の getRefs() を読み込む
+//
+// 目次
+// A. 必要なDOM要素をまとめて取得
+// B. 保存ボタンが押された時の処理本体(Railsへの保存リクエスト〜画面への反映まで)
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {
 
+  // ============================================================
+  // ◆ A. 必要なDOM要素をまとめて取得
+  // ============================================================
   // 必要な要素をまとめて受け取る(前は下でもう一度 getElementById していて二重宣言エラーになっていた)
   const {
     panel,         // #main_panel (フォルダ/メモの一覧パネル)
@@ -13,11 +20,14 @@ document.addEventListener('turbo:load', function () {
     body_input     // 本文入力欄
   } = getRefs();
 
+  // ============================================================
+  // ◆ B. 保存ボタンが押された時の処理本体（ここだけ async は使用していない。）
+  // ============================================================
   // 保存ボタンを押したら、Railsにメモを保存しに行く
 save_btn.addEventListener('click', function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;  // 身分証明書となるcsrfトークンを「application.html.erb」から発行する。
 
-    // ①②: JSのオブジェクトをJSON文字列に変換して、POSTリクエストとして/memosに送信する
+    // JSのオブジェクトをJSON文字列に変換して、POSTリクエストとして/memosに送信する
     fetch('/memos', {
       method: 'POST',
       headers: {
@@ -32,9 +42,9 @@ save_btn.addEventListener('click', function () {
         },
       }),
     })
-      // ③〜⑦: この間にRailsが routes.rb → MemosController#create → Memoモデルの順で処理し、
+      // この間にRailsが routes.rb → MemosController#create → Memoモデルの順で処理し、
       // 保存した内容をJSONに変換して返してくる(サーバー側なのでここには出てこない)
-      .then(response => response.json()) // ⑧: 返ってきたJSON文字列をJSオブジェクトに戻す
+      .then(response => response.json()) // 返ってきたJSON文字列をJSオブジェクトに戻す
       .then(savedMemo => {
         // 保存できたら、パネルを一覧側に戻す
         memo_panel.classList.remove('show');

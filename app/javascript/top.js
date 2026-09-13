@@ -1,11 +1,24 @@
 // このファイルは、メインパネルの開閉、BGMの再生開始、メインパネル内のフォルダ/メモの名前変更(保存込み)を担当
 // window.js の getRefs() を読み込む。中身は「よく使うDOM要素をまとめて取ってくる関数」
+//
+// 目次
+// ① 必要なDOM要素の取得
+// ② BGM再生の開始処理
+// ③ 共有変数の準備・ボタン取得・追加メニューを閉じる共通処理
+// ④ 「憶」をクリックした時の、メインパネル開閉処理
+// ⑤ 「+」ボタンで追加メニューを開閉する処理
+// ⑥ 「メモ」を選んだ時の処理(メモ編集パネルを開く)
+// ⑦ 「＜」で一覧パネルに戻る処理
+// ⑧ メインパネルのアイコンクリック処理(名前のインライン編集)
 import { getRefs } from "window"
 
 // turbo:load は「ページの読み込みが終わったよ」のタイミングで発火するイベント。
 // この中に書いた処理は、ページが表示されるたびに実行される。
 document.addEventListener('turbo:load', function () {
 
+  // ============================================================
+  // ◆ ① 必要なDOM要素の取得
+  // ============================================================
   // getRefs() を呼んで、必要な要素をまとめて受け取る(分割代入)
   const {
     memo,          // 「憶」(クリックでメインパネル開閉に使う)
@@ -24,6 +37,9 @@ document.addEventListener('turbo:load', function () {
     bgm
   } = getRefs();
 
+  // ============================================================
+  // ◆ ② BGM再生の開始処理
+  // ============================================================
   // bgm の再生
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
@@ -34,6 +50,9 @@ document.addEventListener('turbo:load', function () {
   });
 
 
+  // ============================================================
+  // ◆ ③ 共有変数の準備・ボタン取得・追加メニューを閉じる共通処理
+  // ============================================================
   // new_items[0] が「メモ」ボタン、new_items[1] が「フォルダ」ボタン
   const memo_btn = new_items[0];
   const folder_btn = new_items[1];
@@ -52,6 +71,9 @@ document.addEventListener('turbo:load', function () {
     memo_select.classList.remove('show');
   }
 
+  // ============================================================
+  // ◆ ④ 「憶」をクリックした時の、メインパネル開閉処理
+  // ============================================================
   // 「憶」をクリックしたら、パネルの開閉を切り替える
   memo.addEventListener('click', function () {
     if (panel.classList.contains('show') || memo_panel.classList.contains('show')) {
@@ -73,7 +95,10 @@ document.addEventListener('turbo:load', function () {
     }
   });
 
-  // 「+」ボタン: 「メモ or フォルダ」の選択メニューを開閉する
+  // ============================================================
+  // ◆ ⑤ 「+」ボタンで追加メニューを開閉する処理
+  // ============================================================
+  // 「メモ or フォルダ」の選択メニューを開閉する
   add_btn.addEventListener('click', function () {
     new_items.forEach(item => item.classList.toggle('show'));
     or_item.classList.toggle('show');
@@ -81,7 +106,10 @@ document.addEventListener('turbo:load', function () {
     if (window.turnOffSelectMode) window.turnOffSelectMode();
   });
 
-  // 「メモ」を選んだら、メモ編集パネルを表示する
+  // ============================================================
+  // ◆ ⑥ 「メモ」を選んだ時の処理
+  // ============================================================
+  // メモ編集パネルを表示する
   memo_btn.addEventListener('click', function () {
     window.currentColumnFolderId = null; // ▲▲▲ もし別のフォルダでメモを作成するのをやっぱりやめる時、ここでリセットしないと、次に作るメモがそのまま前のフォルダの中に保存されてしまう
     memo_panel.classList.add('show');
@@ -89,13 +117,18 @@ document.addEventListener('turbo:load', function () {
     closeAddMenu();
   });
 
-  // メモ編集パネルの「＜」で一覧パネルに戻る
+  // ============================================================
+  // ◆ ⑦ 「＜」で一覧パネルに戻る処理
+  // ============================================================
   back_btn.addEventListener('click', function () {
     memo_panel.classList.remove('show');
     panel.classList.add('show');
   });
 
 
+  // ============================================================
+  // ◆ ⑧ メインパネルのアイコンクリック処理(名前のインライン編集)
+  // ============================================================
   // アイコン置き場全体のクリックを1箇所で監視(イベント委譲)
   window.icon_container.addEventListener('click', function (e) {
     // 選択モード中のチェックボックス反転は select.js が担当するので、ここでは名前編集に進まないよう止めるだけ
