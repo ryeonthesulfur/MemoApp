@@ -14,6 +14,20 @@ document.addEventListener('turbo:load', function () {
     ];
   }
 
+  // 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+  // 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
+  // application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
+  // このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
+  // なので、常に存在している document に1つだけ付けて代用する。
+  document.addEventListener('click', function (e) {
+    if (!window.isSelecting) return;
+    const icon = e.target.closest('.folder-icon');
+    if (icon && e.target.type !== 'checkbox') {
+      const checkbox = icon.querySelector('.select-checkbox');
+      if (checkbox) checkbox.checked = !checkbox.checked;
+    }
+  });
+
   // 選択モードをオフにする共通処理(チェックボックスを全部消して、バーを隠す)
   // top.js が「憶」ボタンや「+」ボタンを押した時にこれを呼びに来るので、window に載せておく
   window.turnOffSelectMode = function () {
