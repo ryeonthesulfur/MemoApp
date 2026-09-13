@@ -1,19 +1,27 @@
 // このファイルは、メモの詳細表示・編集・保存(PATCH /memos/:id)・閉じる、を担当
 // window.js の getRefs() を読み込む
+//
+// 目次
+// ① メモ詳細を開く処理本体(window.openMemoDetailとしてwindowに公開し、folder_columns.jsからも呼べるようにする)
+// ② メインパネルでメモのアイコンがクリックされた時の入口
+// ③ 「編集」ボタンの処理(編集開始⇄保存の切り替え)
+// ④ 「閉じる」ボタンの処理
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {
-  const { icon_container } = getRefs();
-  
+  const { icon_container, show_panel } = getRefs();
+
   let currentMemoId = null;
   let isEditing = false;
 
 
-  const show_panel = document.getElementById('main_show_panel');
   const close_button = document.querySelector('.close_button');
   const edit_button = document.querySelector('.edit_button');
 
 
+  // ============================================================
+  // ◆ ① メモ詳細を開く処理本体
+  // ============================================================
   // ▲▲▲ メモ詳細を開く処理を関数として切り出し、folder_columns.js からも呼べるように window に公開する
   window.openMemoDetail = function (memoId) {
     // クリックされたメモの中身をRailsに取りに行く
@@ -33,9 +41,12 @@ document.addEventListener('turbo:load', function () {
       });
   };
 
-  // アイコンがクリックされたら、名前クリックかアイコンクリックかを判定する
+  // ============================================================
+  // ◆ ② メインパネルでメモのアイコンがクリックされた時の入口
+  // ============================================================
+  // 中身を開いて閲覧するためにアイコンがクリックされたら、名前クリックかアイコンクリックかを判定して中身を開く関数を呼び出す処理（選択したメモ限定で、中身を開く関数のみを反応させるため。）
   icon_container.addEventListener('click', function (e) {
-    if (window.isSelecting) return;
+    if (window.isSelecting) return; // 選択モード中は、名前クリックの処理は select.js が担当するので、ここでは何もしない
     if (e.target.classList.contains('folder-name')) {
       return; // 名前がクリックされた時は、top.js のインライン編集に任せて何もしない
     }
@@ -43,10 +54,14 @@ document.addEventListener('turbo:load', function () {
     const icon = e.target.closest('.folder-icon');
     if (!icon || !icon.dataset.memoId) return; // フォルダなど、メモじゃないものは無視する
 
-    window.openMemoDetail(icon.dataset.memoId); // ▲▲▲ 切り出した関数を呼ぶだけにする
+      window.openMemoDetail(icon.dataset.memoId); // ▲▲▲ 結果的にこの閲覧するための関数を呼ぶだけにする
   });
 
-  // 編集機能
+
+  // ============================================================
+  // ◆ ③ 「編集」ボタンの処理(編集開始⇄保存の切り替え)
+  // ============================================================
+  // メモ内容の編集機能
       edit_button.addEventListener('click', function() {
         const show_title = document.querySelector('.show_title');
         const show_body = document.querySelector('.body');
@@ -84,6 +99,9 @@ document.addEventListener('turbo:load', function () {
         });
 
 
+  // ============================================================
+  // ◆ ④ 「閉じる」ボタンの処理
+  // ============================================================
   // 「閉じる」ボタンでパネルを隠す
   close_button.addEventListener('click', function () {
     show_panel.classList.remove('show');
