@@ -29,6 +29,13 @@ class FoldersController < ApplicationController
     head :no_content
   end
 
+  # ▲▲▲ このフォルダを、中身(子フォルダ・メモ)ごと再帰的に複製する(Folder#deep_duplicateが本体)
+  def duplicate
+    @folder = Folder.find(params[:id])
+    new_folder = @folder.deep_duplicate
+    render json: new_folder, status: :created
+  end
+
   private
 
   def folder_params
