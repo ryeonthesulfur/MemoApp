@@ -113,31 +113,68 @@ document.addEventListener('turbo:load', function () {
   // ============================================================
   // ◆ ⑦ 「コピー」ボタンの処理
   // ============================================================
-  // チェックが付いてるアイコンを複製する
+  // チェックが付いてるアイコンを、サーバー側で複製する(/folders/:id/duplicate・/memos/:id/duplicate)
   const copy_btn = document.getElementById('copy_btn');
-  copy_btn.addEventListener('click', function () {
-    const icons = getAllIcons();
-    icons.forEach(icon => {
+  copy_btn.addEventListener('click', async function () {
+    const checkedIcons = getAllIcons().filter(icon => {
       const checkbox = icon.querySelector('.select-checkbox');
-      if (checkbox && checkbox.checked) {
-        // アイコンをまるごと複製(チェックボックスや選択中の見た目は複製先には残さない)
-        const clone = icon.cloneNode(true);
-        const cloneCheckbox = clone.querySelector('.select-checkbox');
-        if (cloneCheckbox) cloneCheckbox.remove();
-        clone.classList.remove('selecting');
-
-        // 名前の末尾に _copy(1), _copy(2)... と番号を付ける
-        const nameSpan = clone.querySelector('.folder-name');
-        const baseName = nameSpan.textContent.replace(/_copy\(\d+\)$/, '');
-        const existing = window.icon_container.querySelectorAll('.folder-name');
-        let copyCount = 0;
-        existing.forEach(span => {
-          if (span.textContent.startsWith(baseName + '_copy(')) copyCount++;
-        });
-        nameSpan.textContent = `${baseName}_copy(${copyCount + 1})`;
-        window.icon_container.appendChild(clone);
-      }
+      return checkbox && checkbox.checked;
     });
+
+    // ▲▲▲ 親フォルダと、その中の子フォルダを同時に選択してると二重コピーになるので、実行前に弾く
+    const hasParentChildConflict = checkedIcons.some(icon => {
+      if (!icon.dataset.folderId) return false; // フォルダだけが「中身」を持ちうる
+      return checkedIcons.some(other => {
+        if (other === icon) return false;
+        const otherColumn = other.closest('.folder_column');
+        return otherColumn && otherColumn.dataset.folderId === icon.dataset.folderId;
+      });
+    });
+
+    if (hasParentChildConflict) {
+      alert('二重コピー選択をしています。');
+      checkedIcons.forEach(icon => {
+        const checkbox = icon.querySelector('.select-checkbox');
+        if (checkbox) checkbox.checked = false;
+      });
+      return; // 選択モードは維持したまま、選び直させる
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+    for (const icon of checkedIcons) {
+      const isFolder = !!icon.dataset.folderId;
+      const url = isFolder
+        ? `/folders/${icon.dataset.folderId}/duplicate`
+        : `/memos/${icon.dataset.memoId}/duplicate`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': csrfToken },
+      });
+      const saved = await response.json();
+
+      // 複製したアイコンを組み立てる(既存の新規作成時のアイコンと同じ形)
+      const clone = document.createElement('div');
+      clone.classList.add('folder-icon');
+      if (isFolder) {
+        clone.dataset.folderId = saved.id;
+        clone.innerHTML = `
+          <span class="material-symbols-outlined ${saved.color}">folder</span>
+          <span class="folder-name">${saved.name}</span>
+        `;
+      } else {
+        clone.dataset.memoId = saved.id;
+        clone.innerHTML = `
+          <span class="material-symbols-outlined color-blue">description</span>
+          <span class="folder-name">${saved.title}</span>
+        `;
+      }
+
+      // ▲▲▲ 判定はせず、複製元と同じ場所(icon.parentElement)にそのまま追加する
+      icon.parentElement.appendChild(clone);
+    }
+
     window.turnOffSelectMode();
   });
 });
