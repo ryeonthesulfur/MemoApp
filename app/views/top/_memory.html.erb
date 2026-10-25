@@ -1,0 +1,93 @@
+<%# メインパネル全体。フォルダ/メモの一覧と、新規作成・選択モードのボタン類をまとめた箱(top.jsが開閉を担当) %>
+<div id="main_panel">
+  <div id="main_panel_inner">
+    <%# 「+」ボタンと、そこから開く「メモ or フォルダ」選択メニュー(top.js・folder_saving.js・memo_saving.jsが担当) %>
+    <div class="add_menu_wrapper">
+      <button id="add_btn">+</button>
+      <ul id="memo_select" class="memo_select">
+        <li class="new_items">メモ</li>
+        <li class="or_item">or</li>
+        <li class="new_items">フォルダ</li>
+      </ul>
+    </div>
+
+    <%# 選択モードのON/OFFを切り替える、手のひらアイコンのボタン(select.jsが担当) %>
+    <div class="select_menu_wrapper">
+      <button id="select_btn">
+        <span class="material-symbols-outlined checklist">pan_tool</span>
+      </button>
+    </div>
+
+    <%# メインパネルのフォルダ/メモアイコンが並ぶ置き場(top.js・show_panel.js・select.jsがクリックを監視) %>
+    <div class="icon-container" id="icon_container">
+
+      <%# ルート直下(どのフォルダにも属さない)のフォルダを、DBから取ってきて1個ずつアイコンとして表示 %>
+      <% @folders.each do |folder| %>
+      <div class="folder-icon" data-folder-id="<%= folder.id =%>">
+        <span class="material-symbols-outlined color-blue">folder</span>
+        <span class="folder-name"><%= folder.name.presence || "フォルダ名未設定" %></span>
+      </div>
+      <% end %>
+
+      <%# ルート直下のメモを、同じくDBから取ってきて1個ずつアイコンとして表示 %>
+      <% @memos.each do |memo| %>
+      <div class="folder-icon" data-memo-id="<%= memo.id %>">
+        <span class="material-symbols-outlined color-blue">description</span>
+        <span class="folder-name"><%= memo.title.presence || "名称未設定メモ" %></span>
+      </div>
+      <% end %>
+    </div>
+  </div>
+
+<%# 選択モード中に画面下に表示される、「移動/コピー/削除/共有」のアクションバー(select.jsが担当) %>
+<div id="action_bar">
+    <span class="material-symbols-outlined" id="move_btn">drive_file_move</span>
+    <span class="material-symbols-outlined" id="copy_btn">content_copy</span>
+    <span class="material-symbols-outlined" id="delete_btn">delete</span>
+    <span class="material-symbols-outlined" id="share_btn">share</span>
+  </div>
+</div>
+
+
+<%# フォルダを開くたびに右に増えていく「カラム」の入れ物。中身は最初は空で、folder_columns.jsがJSで動的に追加していく %>
+<div id="folder_columns_container">
+</div>
+
+
+<%# 新規メモの作成・編集用パネル(タイトル・本文の入力欄)。top.js・folder_columns.jsから開かれ、memo_saving.jsが保存を担当 %>
+<div id="memo_panel">
+  <form class="panel-form">
+    <div class="form_group">
+      <ul class="mamo_panel_head">
+        <label for="title" class="title_label">タイトル</label>
+        <li class="back_btn">＜</li>
+      </ul>
+      <input type="text" id="title" name="title" placeholder="タイトル" class="input_form">
+    </div>
+    <div class="form_group_2">
+      <label for="body" class="body_label">本文</label>
+      <textarea id="body" name="body" placeholder="思考する" class="textarea_form"></textarea>
+      <div class="form_group_3">
+        <button type="button" id="save_btn">保存</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<%# 既存のメモをクリックした時に開く、詳細表示・編集パネル(memo_panelとは別物、show_panel.jsが担当) %>
+<div id="main_show_panel">
+  <div class="show_panel">
+    <div class="buttons_header">
+      <div class="date"></div>
+      <div class="button_group">
+        <div class="edit_button">編集</div>
+        <div class="close_button">閉じる</div>
+      </div>
+    </div>
+    <div class="show_content">
+      <div class="show_title"></div>
+      <div class="body"></div>
+    </div>
+  </div>
+</div>

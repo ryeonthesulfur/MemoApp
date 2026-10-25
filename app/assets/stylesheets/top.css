@@ -100,7 +100,7 @@ body {
     visibility: visible; /* 初期状態では見える状態にする */
 }
 
-.main_title.show {
+.main_title.hide {
     opacity: 0; /* 透明度を0%にしてフェードアウト */
     visibility: hidden; /* クリックできないよう非表示にする */
     transition: all 0.6s ease; /* フェードアウトの変化に0.6秒かける */
