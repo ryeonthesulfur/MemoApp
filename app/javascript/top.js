@@ -77,21 +77,21 @@ document.addEventListener('turbo:load', function () {
   // 「憶」をクリックしたら、パネルの開閉を切り替える
   memo.addEventListener('click', function () {
     if (panel.classList.contains('show') || memo_panel.classList.contains('show')) {
-      // すでに開いてるなら閉じる
+      // メインパネルかメモ編集パネルのどちらかが開いている状態から閉じる場合
       panel.classList.remove('show');
       memo_panel.classList.remove('show');
       header_title.classList.remove('show');
-      main_title.classList.remove('show');
+      main_title.classList.remove('hide');
       show_panel.classList.remove('show');
       folder_panel.innerHTML = ''; // 開いてるフォルダのカラムを全部消す
       closeAddMenu();
       window.action_bar.classList.remove('show');
       if (window.isSelecting) window.turnOffSelectMode(); // 選択モード中なら解除
     } else {
-      // 閉じてるなら開く
+      // メインパネルもメモ編集パネルも閉じている状態から開く場合
       panel.classList.add('show');
       header_title.classList.add('show');
-      main_title.classList.add('show');
+      main_title.classList.add('hide');
     }
   });
 
