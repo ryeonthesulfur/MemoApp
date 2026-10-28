@@ -10,4 +10,6 @@ Rails.application.routes.draw do
    end
  end
  root "top#index"
+ get "memory", to: "top#memory" # サイドバー「憶」のページ
+ get "sound", to: "top#sound"   # サイドバー「音」のページ
 end
