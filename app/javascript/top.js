@@ -15,6 +15,7 @@ import { getRefs } from "window"
 // turbo:load は「ページの読み込みが終わったよ」のタイミングで発火するイベント。
 // この中に書いた処理は、ページが表示されるたびに実行される。
 document.addEventListener('turbo:load', function () {
+  if (!document.getElementById('main_panel')) return; // 「憶」のパネルが無いページ(「音」など)では、「憶」用の設定をしない(部品が見つからずエラーになるため)
 
   // ============================================================
   // ◆ ① 必要なDOM要素の取得

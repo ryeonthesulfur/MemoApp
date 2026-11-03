@@ -9,6 +9,7 @@
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {
+  if (!document.getElementById('main_panel')) return; // 「憶」のパネルが無いページ(「音」など)では、「憶」用の設定をしない(部品が見つからずエラーになるため)
   const { icon_container, show_panel } = getRefs();
 
   let currentMemoId = null;
