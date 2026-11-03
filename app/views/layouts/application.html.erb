@@ -8,6 +8,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%# ページを移る時、Turboが覚えている前回の画面(見出しやパネルが表示済み)を先に一瞬見せないようにする。見せるとブリンクしてからフワッと出てしまうため %>
+    <meta name="turbo-cache-control" content="no-preview">
 
     <%= yield :head %>
 
