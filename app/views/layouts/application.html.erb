@@ -56,6 +56,8 @@
           </ul>
         </div>
         <div class="main_title" id="main_title" data-turbo-permanent>MIND PALACE</div>
+        <%# Webampのウィンドウを入れる場所。ページを移っても取り替えないので、ウィンドウの状態や位置がそのまま残る(「音」以外のページではCSSで隠す) %>
+        <div id="webamp_container" data-turbo-permanent></div>
         <%= yield %>
       </div>
       </div>

@@ -156,13 +156,23 @@ body {
     align-items: center; /* ヘッダー内の「記憶」と同じく、縦方向の中央に揃える */
 }
 
-/* Webampのウィンドウを並べる範囲。Webampは、初めて表示する時に、この範囲の中央にウィンドウを並べる */
-#webamp_holder {
-    position: absolute; /* .main_content を基準に宙に浮かせる */
+/* Webampのウィンドウを入れる場所(レイアウトにある)。Webampは、初めて表示する時にこの範囲の中央にウィンドウを並べ、ドラッグもこの範囲の中でできる */
+#webamp_container {
+    position: absolute; /* .main_content を基準に宙に浮かせる(Webampの決まりで、static以外にする必要がある) */
     top: 14%; /* main_panel と同じ高さから始める */
     left: 2%; /* main_panel と同じ左端から始める */
     right: 2%; /* 右端の余白 */
     bottom: 6%; /* main_panel と同じ高さで終わる */
+    pointer-events: none; /* 入れ物の何も無い部分は、クリックを下に通す */
+}
+
+#webamp_container #webamp {
+    pointer-events: auto; /* ウィンドウ自体は、クリックやドラッグを受け取る */
+}
+
+/* 「音」以外のページ(見出し「音楽」が無いページ)では、ウィンドウを入れ物ごと隠す。音楽は止まらない */
+body:not(:has(#sound_title)) #webamp_container {
+    display: none;
 }
 
 /* 外部リンクアイコン styles */

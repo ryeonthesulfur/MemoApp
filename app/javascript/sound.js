@@ -21,23 +21,19 @@ document.addEventListener('keydown', function (e) {
 // ============================================================
 let webampLoading = false; // 初めて表示している途中に、もう一度「音」を開いた時、Webampを2つ作らないための目印
 
-// 「音」のページに来た時に、Webampのウィンドウを出す
+// 「音」のページに初めて来た時に、Webampを作って表示する
+// ウィンドウは、レイアウトにある入れ物(#webamp_container、data-turbo-permanent)の中に表示する。
+// この入れ物はページを移っても取り替えられないので、2回目以降は何もしなくても、ウィンドウが元の状態のまま出る
+// (「音」以外のページでは、CSSで入れ物ごと隠している)
 async function showWebamp() {
-  // 2回目以降は、覚えておいたウィンドウを付け直すだけ(再生状態・プレイリストもそのまま戻る。実験2で確認済み)
-  // 同じWebampは2回表示できない(Cannot render a Webamp instance twice)ので、作り直さずに付け直す
-  if (window.webampNode) {
-    document.body.appendChild(window.webampNode);
-    return;
-  }
-  if (webampLoading) return;
+  if (window.myWebamp || webampLoading) return; // 作るのは1回だけ(同じWebampは2回表示できないため)
   webampLoading = true;
 
   // Webampの部品(約2MB)は、「音」を初めて開いた時だけ読み込む
   const { default: Webamp } = await import("webamp");
 
-  // 読み込んでいる間に、別のページへ移っていたら、何もしない(次に「音」を開いた時に作る)
-  const holder = document.getElementById('webamp_holder');
-  if (!holder) {
+  // 読み込んでいる間に、別のページへ移っていたら、何もしない(入れ物が隠れていて、ウィンドウを並べる大きさが測れないため。次に「音」を開いた時に作る)
+  if (!document.getElementById('sound_title')) {
     webampLoading = false;
     return;
   }
@@ -45,23 +41,17 @@ async function showWebamp() {
   // プレイリストは最初は空。曲はウィンドウにドラッグ&ドロップして追加する
   // 設定が無くても {} を渡す(何も渡さないと、Webampの中で設定を読もうとしてエラーになるため)
   window.myWebamp = new Webamp({});
-  await window.myWebamp.renderWhenReady(holder); // holder の範囲の中に、ウィンドウを並べて表示する
-  window.webampNode = document.getElementById('webamp'); // Webampが<body>に作ったウィンドウの入れ物を覚えておく(ページを移っても、この変数に残る)
+
+  // renderInto は、渡した入れ物を「ウィンドウを動かせる範囲」にして、その中央にウィンドウを並べる。
+  // renderWhenReady だと、その時の<body>が範囲になる。<body>はページを移るたびにTurboが取り替えるので、
+  // 戻ってきた後は捨てられた古い<body>(大きさ0)が範囲のままになり、ドラッグした瞬間にウィンドウが画面の外へ飛んでしまう
+  await window.myWebamp.renderInto(document.getElementById('webamp_container'));
 
   // Webampで再生が始まったら、BGMを止める。track は、再生が始まった時は曲の情報、停止・一時停止の時は null(実験3で確認済み)
   window.myWebamp.onTrackDidChange(function (track) {
     if (track) window.bgm.pause();
   });
-
-  // 表示の準備をしている間に、別のページへ移っていたら、ウィンドウを外しておく
-  if (!document.getElementById('sound_title')) window.webampNode.remove();
 }
-
-// ページを離れる時、Turboが画面を保存する前に、ウィンドウを外しておく
-// 外さないと、ブラウザの「戻る」で保存された画面に戻った時、動かないウィンドウのコピーが残って、付け直した本物と2つになるため
-document.addEventListener('turbo:before-cache', function () {
-  if (window.webampNode) window.webampNode.remove();
-});
 
 // ============================================================
 // ◆ 「音」のページの演出
