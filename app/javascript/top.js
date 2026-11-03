@@ -74,8 +74,21 @@ document.addEventListener('turbo:load', function () {
   // ============================================================
   // ◆ ④ 「憶」をクリックした時の、メインパネル開閉処理
   // ============================================================
-  // 「憶」をクリックしたら、パネルの開閉を切り替える
-  memo.addEventListener('click', function () {
+  // 「憶」は /memory へのリンク。開く時は、リンクで /memory に移ってから(この④の最後の処理で)フワッと開く。
+  // 閉じる時は、ページを移る前にフワッと閉じて、閉じ終わってから / に戻る
+  // (閉じ終わった見た目と / の見た目が同じなので、ページの切り替わりが見えない)
+  function openPanel() {
+    panel.classList.add('show');
+    header_title.classList.add('show');
+    main_title.classList.add('hide');
+  }
+
+  let closeTimer = null; // 閉じ終わってから / に戻るまでのタイマー
+
+  memo.addEventListener('click', function (e) {
+    if (location.pathname !== '/memory') return; // / や /sound にいる時は、リンクでそのまま /memory に移る
+
+    e.preventDefault(); // /memory にいる時は、リンクでページを移らずに開閉する
     if (panel.classList.contains('show') || memo_panel.classList.contains('show')) {
       // メインパネルかメモ編集パネルのどちらかが開いている状態から閉じる場合
       panel.classList.remove('show');
@@ -87,13 +100,24 @@ document.addEventListener('turbo:load', function () {
       closeAddMenu();
       window.action_bar.classList.remove('show');
       if (window.isSelecting) window.turnOffSelectMode(); // 選択モード中なら解除
+
+      // 「記憶」とMIND PALACEの2秒の演出が終わってから / に戻る。待っている間に別のページへ移っていたら戻らない
+      closeTimer = setTimeout(function () {
+        if (location.pathname === '/memory') Turbo.visit('/');
+      }, 2000);
     } else {
-      // メインパネルもメモ編集パネルも閉じている状態から開く場合
-      panel.classList.add('show');
-      header_title.classList.add('show');
-      main_title.classList.add('hide');
+      // 閉じている途中(/ に戻る前)にもう一度押された場合は、戻るのをやめて開き直す
+      clearTimeout(closeTimer);
+      openPanel();
     }
   });
+
+  // /memory に来た時は、透明な状態を1回描いてから開く(すぐ開くとフワッとした演出にならないため)
+  if (location.pathname === '/memory') {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(openPanel);
+    });
+  }
 
   // ============================================================
   // ◆ ⑤ 「+」ボタンで追加メニューを開閉する処理
