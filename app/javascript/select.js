@@ -10,6 +10,25 @@
 // ⑦ 「コピー」ボタンの処理
 
 
+// ============================================================
+// ◆ ⑤ 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+// ============================================================
+// 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
+// application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
+// このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
+// なので、常に存在している document に1つだけ付けて代用する。
+// turbo:load の外に書くのは、画面全体の読み込みで1回だけ登録するため。
+// (中に書くと、ページを移るたびに同じ設定が増えていき、1回押しただけでON→OFFと2回切り替わって、変わらないように見えてしまう)
+document.addEventListener('click', function (e) {
+  if (!window.isSelecting) return;
+  const icon = e.target.closest('.folder-icon');
+  if (icon && e.target.type !== 'checkbox') {
+    const checkbox = icon.querySelector('.select-checkbox');
+    if (checkbox) checkbox.checked = !checkbox.checked;
+  }
+});
+
+
 document.addEventListener('turbo:load', function () {
   if (!document.getElementById('main_panel')) return; // 「憶」のパネルが無いページ(「音」など)では、「憶」用の設定をしない(部品が見つからずエラーになるため)
 
@@ -72,20 +91,8 @@ document.addEventListener('turbo:load', function () {
   });
 
   // ============================================================
-  // ◆ ⑤ 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理
+  // ◆ ⑤ 選択モード中、アイコンがクリックされたらチェックボックスをON/OFFする処理 → このファイルの先頭(turbo:load の外)に移動
   // ============================================================
-  // 本当は icon_container と folder_columns_container、それぞれに直接付けたいところだが、それはできない。
-  // application.js の import 順で、select.js は folder_columns.js より先に実行されるため、
-  // このファイル(select.js)が動く時点では、folder_columns_container はまだ window に置かれていない。
-  // なので、常に存在している document に1つだけ付けて代用する。
-  document.addEventListener('click', function (e) {
-    if (!window.isSelecting) return;
-    const icon = e.target.closest('.folder-icon');
-    if (icon && e.target.type !== 'checkbox') {
-      const checkbox = icon.querySelector('.select-checkbox');
-      if (checkbox) checkbox.checked = !checkbox.checked;
-    }
-  });
 
   // ============================================================
   // ◆ ⑥ 「削除」ボタンの処理
