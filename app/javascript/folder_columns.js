@@ -10,6 +10,7 @@
 import {getRefs} from "window"
 
 document.addEventListener('turbo:load', function () {
+    if (!document.getElementById('main_panel')) return; // 「憶」のパネルが無いページ(「音」など)では、「憶」用の設定をしない(部品が見つからずエラーになるため)
     const { icon_container, folder_panel: folder_columns_container } = getRefs();
     // select.js が window.folder_columns_container を見に来るので、window に載せておく
     window.folder_columns_container = folder_columns_container;

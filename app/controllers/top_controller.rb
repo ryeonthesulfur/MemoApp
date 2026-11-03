@@ -3,4 +3,12 @@ class TopController < ApplicationController
     @memos = Memo.where(folder_id: nil) # ▲▲▲ フォルダ内のメモがメインパネルにも重複して出てしまうのを防ぐ(Folderのparent_idと同じ考え方)
     @folders = Folder.where(parent_id: nil)
   end
+
+  def memory
+    @memos = Memo.where(folder_id: nil)
+    @folders = Folder.where(parent_id: nil)
+  end
+
+  def sound
+  end
 end

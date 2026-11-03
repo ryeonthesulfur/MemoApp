@@ -8,6 +8,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%# ページを移る時、Turboが覚えている前回の画面(見出しやパネルが表示済み)を先に一瞬見せないようにする。見せるとブリンクしてからフワッと出てしまうため %>
+    <meta name="turbo-cache-control" content="no-preview">
 
     <%= yield :head %>
 
@@ -32,9 +34,9 @@
       <div class="side_bar">
         <div></div>
         <ul class="main-box">
-          <li class="item-boxes">憶</li>
+          <li class="item-boxes"><%= link_to "憶", memory_path %></li>
           <li class="item-boxes">時</li>
-          <li class="item-boxes">音</li>
+          <li class="item-boxes"><%= link_to "音", sound_path %></li>
           <li class="item-close"><span class="material-symbols-outlined">power_settings_new</span></li>
         </ul>
       </div>
@@ -43,7 +45,6 @@
         <div class="right_header">
           <h1 id="header_title">記憶</h1>
           <h1 id="header_title">カレンダー</h1>
-          <h1 id="header_title">音</h1>
           <ul class="header_links">
             <li><a href="https://www.youtube.com/" target="_blank"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" /></a></li>
             <li><a href="https://gemini.google.com/" target="_blank"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=128" /></a></li>
@@ -54,7 +55,9 @@
             <li><a href="https://www.netflix.com/" target="_blank"><img src="https://www.netflix.com/favicon.ico" /></a></li>
           </ul>
         </div>
-        <div class="main_title">MIND PALACE</div>
+        <div class="main_title" id="main_title" data-turbo-permanent>MIND PALACE</div>
+        <%# Webampのウィンドウを入れる場所。ページを移っても取り替えないので、ウィンドウの状態や位置がそのまま残る(「音」以外のページではCSSで隠す) %>
+        <div id="webamp_container" data-turbo-permanent></div>
         <%= yield %>
       </div>
       </div>

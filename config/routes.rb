@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root "top#index"
  resources :memos, only: [ :create, :show, :update, :destroy ] do
    member do
      post :duplicate
@@ -9,5 +10,6 @@ Rails.application.routes.draw do
      post :duplicate
    end
  end
- root "top#index"
+  get "memory", to: "top#memory"
+  get "sound",  to: "top#sound"
 end

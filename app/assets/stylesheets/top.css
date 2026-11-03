@@ -52,6 +52,12 @@ body {
     color: rgba(215, 215, 215, 0.874); /* 通常時の文字色(うっすら灰色がかった白) */
 }
 
+/* サイドバーの「音」などのリンク。ブラウザ標準の青色・下線をやめて、親の<li>と同じ見た目にする */
+.item-boxes a {
+    color: inherit; /* 親の<li>と同じ文字色にする(hover時の白への変化にも付いていく) */
+    text-decoration: none; /* リンクの下線を消す */
+}
+
 /* 閉じるボタン styles */
 .item-close {
     font-size: 1.72vw; /* 33px */
@@ -123,8 +129,8 @@ body {
     list-style: none; /* ul の「・」マークを消す */
 }
 
-/* ヘッダータイトル styles */
-#header_title {
+/* ヘッダータイトル styles(「音楽」の#sound_titleも、「記憶」と同じ見た目・演出を共有する) */
+#header_title, #sound_title {
     font-size: 3.13vw; /* 60px */
     font-family: 'Noto Serif JP', serif;
     color: rgba(235, 235, 235, 0.931); /* ほぼ白の文字色 */
@@ -135,8 +141,48 @@ body {
     transition: opacity 2s ease; /* 透明度の変化に2秒かける */
 }
 
-#header_title.show {
+#header_title.show, #sound_title.show {
     opacity: 1; /* 透明度を100%にして完全に見えるようにする */
+}
+
+/* 「音楽」は_soundパーシャル(ヘッダーの外)にあるので、宙に浮かせて「記憶」と同じ位置に置く */
+#sound_title {
+    position: absolute; /* .main_content を基準に宙に浮かせる */
+    top: 0; /* 上端に置く */
+    left: 0; /* 左端に置く(左の余白は共通のpadding-leftで「記憶」と揃う) */
+    height: 10%; /* .right_header と同じ高さにする */
+    box-sizing: border-box; /* padding-top を高さ10%の内側に含める */
+    display: flex; /* 文字を縦方向の中央に置くために使う */
+    align-items: center; /* ヘッダー内の「記憶」と同じく、縦方向の中央に揃える */
+}
+
+/* Webampのウィンドウを入れる場所(レイアウトにある)。Webampは、初めて表示する時にこの範囲の中央にウィンドウを並べ、ドラッグもこの範囲の中でできる */
+#webamp_container {
+    position: absolute; /* .main_content を基準に宙に浮かせる(Webampの決まりで、static以外にする必要がある) */
+    top: 14%; /* main_panel と同じ高さから始める */
+    left: 2%; /* main_panel と同じ左端から始める */
+    right: 2%; /* 右端の余白 */
+    bottom: 6%; /* main_panel と同じ高さで終わる */
+    pointer-events: none; /* 入れ物の何も無い部分は、クリックを下に通す */
+    opacity: 1; /* 通常は表示する */
+    transition: opacity 0.6s ease; /* main_panel と同じく、0.6秒かけてフワッと出し入れする */
+}
+
+#webamp_container.hide {
+    opacity: 0; /* 「音」を閉じる時に透明にする */
+}
+
+#webamp_container.hide #webamp {
+    pointer-events: none; /* 透明になったウィンドウは、クリックやドラッグを受け取らない */
+}
+
+#webamp_container #webamp {
+    pointer-events: auto; /* ウィンドウ自体は、クリックやドラッグを受け取る */
+}
+
+/* 「音」以外のページ(見出し「音楽」が無いページ)では、ウィンドウを入れ物ごと隠す。音楽は止まらない */
+body:not(:has(#sound_title)) #webamp_container {
+    display: none;
 }
 
 /* 外部リンクアイコン styles */
