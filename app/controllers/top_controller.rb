@@ -6,7 +6,7 @@ class TopController < ApplicationController
 
   def memory
     @memos = Memo.where(folder_id: nil)
-    @folder = Folder.where(parent_id: nil)
+    @folders = Folder.where(parent_id: nil)
   end
 
   def sound
