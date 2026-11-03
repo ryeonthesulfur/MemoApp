@@ -164,6 +164,16 @@ body {
     right: 2%; /* 右端の余白 */
     bottom: 6%; /* main_panel と同じ高さで終わる */
     pointer-events: none; /* 入れ物の何も無い部分は、クリックを下に通す */
+    opacity: 1; /* 通常は表示する */
+    transition: opacity 0.6s ease; /* main_panel と同じく、0.6秒かけてフワッと出し入れする */
+}
+
+#webamp_container.hide {
+    opacity: 0; /* 「音」を閉じる時に透明にする */
+}
+
+#webamp_container.hide #webamp {
+    pointer-events: none; /* 透明になったウィンドウは、クリックやドラッグを受け取らない */
 }
 
 #webamp_container #webamp {

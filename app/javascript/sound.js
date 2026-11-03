@@ -57,21 +57,54 @@ async function showWebamp() {
 // ◆ 「音」のページの演出
 // ============================================================
 // turbo:load は「ページの読み込みが終わったよ」のタイミングで発火するイベント。
-// 「音」のページ(/sound)に移った時に、見出し「音楽」をフワッと表示し、右下のMIND PALACEをフワッと消す(「憶」と同じ演出)
+// 「音」のページ(/sound)に移った時に、見出し「音楽」とWebampをフワッと表示し、右下のMIND PALACEをフワッと消す。
+// もう一度「音」を押したら、フワッと閉じて、閉じ終わってから / に戻る(「憶」と同じ演出)
 document.addEventListener('turbo:load', function () {
   const sound_title = document.getElementById('sound_title'); // 見出し「音楽」(_soundパーシャルにある)
   if (!sound_title) return; // 「音」以外のページには無いので、何もしない
   const main_title = document.querySelector('.main_title'); // 右下のMIND PALACE(レイアウトにある)
+  const webamp_container = document.getElementById('webamp_container'); // Webampのウィンドウの入れ物(レイアウトにある)
+  const sound_link = document.querySelector('.item-boxes a[href="/sound"]'); // サイドバーの「音」
+
+  function openSound() {
+    sound_title.classList.add('show');
+    main_title.classList.add('hide');
+    webamp_container.classList.remove('hide');
+  }
+
+  function closeSound() {
+    sound_title.classList.remove('show');
+    main_title.classList.remove('hide');
+    webamp_container.classList.add('hide');
+  }
 
   showWebamp();
 
-  // 透明な状態を1回画面に描かせてから show を付ける。
-  // すぐに付けると、透明→表示の変化が起きず、2秒の演出にならないため
+  // Webampの入れ物は、ページを移っても同じもの(data-turbo-permanent)なので、前に閉じた時の hide が残っていることがある。
+  // いったん透明にしてから開き直して、毎回フワッと出るようにする
+  webamp_container.classList.add('hide');
+
+  // 透明な状態を1回画面に描かせてから開く。
+  // すぐに開くと、透明→表示の変化が起きず、フワッとした演出にならないため
   requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      sound_title.classList.add('show');
-      main_title.classList.add('hide');
-    });
+    requestAnimationFrame(openSound);
+  });
+
+  let closeTimer = null; // 閉じ終わってから / に戻るまでのタイマー
+
+  sound_link.addEventListener('click', function (e) {
+    e.preventDefault(); // /sound にいる時は、リンクでページを移らずに開閉する
+    if (sound_title.classList.contains('show')) {
+      closeSound();
+      // 「音楽」とMIND PALACEの2秒の演出が終わってから / に戻る。待っている間に別のページへ移っていたら戻らない
+      closeTimer = setTimeout(function () {
+        if (location.pathname === '/sound') Turbo.visit('/');
+      }, 2000);
+    } else {
+      // 閉じている途中(/ に戻る前)にもう一度押された場合は、戻るのをやめて開き直す
+      clearTimeout(closeTimer);
+      openSound();
+    }
   });
 });
 
