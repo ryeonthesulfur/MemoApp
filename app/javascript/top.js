@@ -33,22 +33,13 @@ document.addEventListener('turbo:load', function () {
     main_title,    // MIND PALACE的な大きいタイトル文字
     icon_container, // アイコンを並べてる場所(.icon-container)
     show_panel,
-    folder_panel,
-    bgm
+    folder_panel
   } = getRefs();
 
   // ============================================================
-  // ◆ ② BGM再生の開始処理
+  // ◆ ② BGM再生の開始処理 → sound.js に移動(ページを移っても止まらないように、JSだけで作るAudioにしたため)
   // ============================================================
-  // bgm の再生
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      bgm.play();
-    }
-  }, {
-    once: true
-  });
-
+  
 
   // ============================================================
   // ◆ ③ 共有変数の準備・ボタン取得・追加メニューを閉じる共通処理

@@ -17,7 +17,6 @@ export function getRefs() {
     main_title: document.querySelector('.main_title'), // MIND PALACE的な大きいタイトル文字
     show_panel: document.getElementById('main_show_panel'), // 既存メモをクリックした時に開く、詳細表示パネル(新規作成用のmemo_panelとは別物)
     folder_panel: document.getElementById('folder_columns_container'), // 開いてる全カラム(子フォルダのパネル)をまとめて入れる場所
-    bgm: document.getElementById('bgm'), // BGM再生用のaudio要素
     sound: document.querySelector('.item-boxes')[2] // 「音」をクリックした時の要素
   };
 }
