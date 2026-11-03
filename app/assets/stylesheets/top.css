@@ -156,6 +156,15 @@ body {
     align-items: center; /* ヘッダー内の「記憶」と同じく、縦方向の中央に揃える */
 }
 
+/* Webampのウィンドウを並べる範囲。Webampは、初めて表示する時に、この範囲の中央にウィンドウを並べる */
+#webamp_holder {
+    position: absolute; /* .main_content を基準に宙に浮かせる */
+    top: 14%; /* main_panel と同じ高さから始める */
+    left: 2%; /* main_panel と同じ左端から始める */
+    right: 2%; /* 右端の余白 */
+    bottom: 6%; /* main_panel と同じ高さで終わる */
+}
+
 /* 外部リンクアイコン styles */
 .header_links {
     display: flex; /* アイコンを横に並べる */
