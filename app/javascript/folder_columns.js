@@ -79,6 +79,14 @@ document.addEventListener('turbo:load', function () {
             `;
             folder_columns_container.appendChild(column);
 
+            // 画面に入れた直後ではなく、requestAnimationFrame を2回挟んでから show を付ける(main_panel と同じフワッと出る演出にするため)
+            // すぐ付けると、ブラウザが「最初から見えていた」と判断して、透明からの変化(transition)が起きず、パッと出てしまう
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    column.classList.add('show');
+                });
+            });
+
 
             // 子フォルダパネルである「folder_show_content」の中にフォルダが入るようにする。
             const folderShowContent = column.querySelector('.folder_show_content');
