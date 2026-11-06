@@ -222,7 +222,7 @@ body:not(:has(#sound_title)) #webamp_container {
     width: 30%; /* パネルの横幅 */
     height: 80%; /* パネルの縦幅 */
     border-radius: 1.15vw; /* 22px。角を丸める */
-    background-color: #c9d1c8; /* パネルの背景色 */
+    background-color: #d6e6d4e9; /* パネルの背景色 */
     opacity: 0; /* 初期状態では透明にする */
     transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
     visibility: hidden; /* 初期状態では非表示にする */

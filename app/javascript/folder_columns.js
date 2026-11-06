@@ -285,12 +285,9 @@ document.addEventListener('turbo:load', function () {
             // ▼▼▼ 子フォルダ内での新規メモ作成 ▼▼▼
             //　その時に開いている子フォルダのパネルの中で「+」→「メモ」を選んだら、そのフォルダのidを覚えておいてメモパネルを開く
             const memoBtn = newItems[0];
-            const { memo_panel } = getRefs();
             memoBtn.addEventListener('click', function () {
-                // memo_saving.js がメモ保存時にこのフォルダ id を読みに来るので、window に載せておく
-                window.currentColumnFolderId = folderId;    //保存ボタンを押した時に、どのフォルダの中に保存するかを決めるための共有変数。「memo_saving.js」がこれを読み取りに来る。
-
-                memo_panel.classList.add('show');   // メモパネルを開く、その後の保存処理は memo_saving.js に任せる。
+                // メモの画面を新規作成で開く。このフォルダの id を渡しておくと、保存した時にこのフォルダの中に作られる(show_panel.js の window.openNewMemo)
+                window.openNewMemo(folderId);
                 newItems.forEach(item => item.classList.remove('show'));
                 orItem.classList.remove('show');
                 memoSelect.classList.remove('show');

@@ -1,130 +1,53 @@
-/* メモの新規作成/編集フォームを表示するパネル本体。top.cssの#main_panelと同じ「右隣に浮かせる」仕組みを使っている */
-#memo_panel {
-    position: absolute; /* 親（main_content）を基準に宙に浮かせる */
-    top: 14%; /* 上端からの距離 */
-    left: 2%; /* 宙に浮いている要素は left で座標を指定します！ */
-    width: 80%; /* パネルの横幅 */
-    height: 80%; /* パネルの縦幅 */
-    opacity: 0; /* 初期状態では透明にする */
-    transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
-    visibility: hidden; /* 初期状態では非表示にする */
-    overflow-y: auto; /* はみ出た時「だけ」空気を読んでスクロールバーを出す、王道の設定に変更！ */
-    border-radius: 1.15vw; /* 22px。角を丸める */
-    background-color: #c9d1c8eb; /* パネルの背景色 */
-}
-
-/* JSが「開いた」時に付けるクラス。opacity/visibilityを反転させて実際に見える状態にする */
-#memo_panel.show {
-    opacity: 1; /* 透明度を100%にして完全に見えるようにする */
-    visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
-}
+/* メモの画面(show_panel.css の #main_show_panel)の、「編集の状態」で見える入力欄と保存ボタンの見た目 */
+/* 前は新規作成用の画面(#memo_panel)が別にあったが、メモの画面を1枚にまとめたので、入力欄だけがここに残っている */
 
 /* --- フォームのスタイル --- */
 
-/* メモのタイトル・本文の入力欄をまとめる<form>本体 */
+/* メモの本文の入力欄をまとめる<form>本体(タイトル欄はヘッダーにあり、form="memo_form" でこのフォームの一部になっている)。見せる/隠すの切り替えは show_panel.css が担当 */
 .panel-form {
-    display: flex; /* 中身(タイトル欄と本文欄)を縦に並べる土台 */
-    flex-direction: column; /* 縦並びにする */
-    height: 100%; /* パネルの高さいっぱいにフォームを広げる */
+    flex: 1; /* ヘッダーの残りの高さを全部占有する */
+    flex-direction: column; /* 本文欄を高さいっぱいに広げるための土台 */
+    padding: 1.56vw 1.67vw; /* 30px 32px。画面のふちとの間の余白 */
+    min-height: 0; /* 本文欄が長くなっても、画面の外にはみ出さないようにする */
 }
 
-/* タイトル欄(ラベル+入力欄+閉じるボタン)をまとめるブロック */
-.form_group {
-    margin: 1.04vw 1.04vw; /* 20px 20px */
-    display: flex; /* ラベルと入力欄を並べる土台 */
-    flex-direction: column; /* ラベル（文字）と入力欄も縦並びにする */
-    text-align: left; /* 文字を左寄せにする */
-}
-
-/* 本文欄(ラベル+textarea+保存ボタン)をまとめるブロック */
-.form_group_2 {
-    margin: 1.04vw 1.04vw; /* 20px 20px */
-    display: flex; /* ラベルと入力欄を並べる土台 */
-    flex-direction: column; /* ラベル（文字）と入力欄も縦並びにする */
-    text-align: left; /* 文字を左寄せにする */
-    flex: 1; /* 固定の500pxをやめて、パネル内の残りのスペースを全部埋める設定にする！ */
-}
-
-/* 「タイトル」というラベル文字 */
-.title_label {
-    margin-bottom: 0.52vw; /* 10px。入力欄との間隔 */
-    font-size: 0.94vw; /* 18px */
+/* input（一行）と textarea（複数行）の共通の見た目 */
+.input_form,
+.textarea_form {
+    border: none; /* 標準の枠線を消す */
+    border-radius: 0.63vw; /* 12px。角を丸める */
+    background-color: rgba(255, 255, 255, 0.55); /* 画面の色に少しだけ白を重ねた背景 */
     font-family: 'Noto Serif JP', serif;
+    color: #333; /* 文字色 */
+    outline: none; /* クリックした時の青い枠を消す */
 }
 
-/* 「本文」というラベル文字 */
-.body_label {
-    margin-bottom: 0.52vw; /* 10px。入力欄との間隔 */
-    font-size: 0.94vw; /* 18px */
-    font-family: 'Noto Serif JP', serif;
-}
-
-/* input（一行）と textarea（複数行）の見た目を整える */
-
-/* タイトルを入力する一行の<input> */
+/* タイトルを入力する一行の<input>(ヘッダーの、日付の右隣) */
 .input_form {
-    padding: 0.52vw; /* 10px。入力欄内側の余白 */
-    border: 1px solid #ccc; /* 薄い灰色の枠線 */
-    border-radius: 0.26vw; /* 5px。角を丸める */
-    font-size: 0.83vw; /* 16px */
-    width: 20%; /* 入力欄の横幅 */
-    height: 2.08vw; /* 40px。入力欄の縦幅 */
-    font-family: 'Noto Serif JP', serif;
+    flex: 1; /* 日付とボタン群の間の残りの幅を全部使う */
+    min-width: 0; /* 狭い時に、ボタン群を押し出さずに縮めるため */
+    padding: 0.31vw 0.63vw; /* 6px 12px。入力欄内側の余白 */
+    font-size: 1.15vw; /* 22px。閲覧の状態のタイトル(.show_title)と同じ大きさ */
+    border-radius: 0.42vw; /* 8px。ヘッダーに収まるよう、本文欄より小さく角を丸める */
 }
 
 /* 本文を入力する複数行の<textarea> */
 .textarea_form {
-    padding: 0.52vw; /* 10px。入力欄内側の余白 */
-    border: 1px solid #ccc; /* 薄い灰色の枠線 */
-    border-radius: 0.26vw; /* 5px。角を丸める */
-    width: 100%; /* 親要素(.form_group_2)の幅いっぱいに広げる */
-    height: 100%; /* 親要素の残りの高さいっぱいに広げる */
-    font-family: 'Noto Serif JP', serif;
-    font-size: 0.83vw; /* 16px */
+    flex: 1; /* フォームの高さいっぱいに広げる */
+    padding: 1.04vw; /* 20px。入力欄内側の余白 */
+    font-size: 0.78vw; /* 15px。閲覧の状態の本文(.show_content .body)と同じ大きさ */
+    line-height: 1.6; /* 閲覧の状態の本文と同じ行間 */
+    resize: none; /* 右下の大きさ変更のつまみを消す(画面の大きさに合わせて広がるため) */
 }
 
-/* 「タイトル」ラベルと「閉じる(＜)」ボタンを両端に並べる行 */
-.mamo_panel_head {
-    display: flex; /* タイトルラベルと閉じるボタンを横に並べる */
-    justify-content: space-between; /* タイトルと閉じるボタンを両端に配置する */
-    align-items: center; /* タイトルと閉じるボタンを縦方向の中央に揃える */
-    padding: 0; /* ul標準の内側余白を消す */
-    margin: 0; /* ul標準の外側余白を消す */
-    list-style: none; /* ul の「・」マークを消す */
-}
-
-/* 閉じるボタンのスタイル */
-/* メモパネルを閉じる「＜」ボタン */
-.back_btn {
-    padding: 0.26vw 0.52vw; /* 5px 10px */
-    font-size: 0.78vw; /* 15px */
-    font-family: 'Noto Serif JP', serif;
-    background-color: #838d8a; /* ボタンの背景色 */
-    color: white; /* 文字色 */
-    border: none; /* 標準の枠線を消す */
-    border-radius: 0.78vw; /* 15px。角を丸める */
-    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
-}
-
-.back_btn:hover {
-    background-color: #6b736f; /* hover時の背景色 */
-    transition: background-color 0.3s ease; /* 背景色の変化に0.3秒かける */
-}
-
-/* 「保存」ボタンを右端に配置するための行 */
-.form_group_3 {
-    margin: 1.04vw 1.04vw; /* 20px 20px */
-    display: flex; /* 保存ボタンを配置する土台 */
-    justify-content: flex-end; /* 保存ボタンを右端に配置する */
-}
-
-/* メモを保存する「保存」ボタン */
+/* メモを保存する「保存」ボタン。「編集」「閉じる」と同じ丸い形で、緑色にする */
 #save_btn {
-    padding: 0.26vw 1.04vw; /* 5px 20px */
+    padding: 0.21vw 0.73vw; /* 4px 14px。「編集」「閉じる」と同じ大きさ */
     background-color: rgba(91, 174, 147, 0.945); /* ボタンの背景色(緑) */
-    border-radius: 0.78vw; /* 15px。角を丸める */
+    border-radius: 999px; /* 「編集」「閉じる」と同じく、常に丸くする */
     color: white; /* 文字色 */
     border: none; /* 標準の枠線を消す */
+    font: inherit; /* 「編集」「閉じる」と同じ文字の大きさ・書体にする */
     cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
 }
 

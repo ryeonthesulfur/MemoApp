@@ -7,8 +7,8 @@
 // ③ 共有変数の準備・ボタン取得・追加メニューを閉じる共通処理
 // ④ 「憶」をクリックした時の、メインパネル開閉処理
 // ⑤ 「+」ボタンで追加メニューを開閉する処理
-// ⑥ 「メモ」を選んだ時の処理(メモ編集パネルを開く)
-// ⑦ 「＜」で一覧パネルに戻る処理
+// ⑥ 「メモ」を選んだ時の処理(メモの画面を新規作成で開く)
+// ⑦ 「＜」で一覧パネルに戻る処理(メモの画面を1枚にまとめたので不要になった)
 // ⑧ メインパネルのアイコンクリック処理(名前のインライン編集)
 import { getRefs } from "window"
 
@@ -29,11 +29,9 @@ document.addEventListener('turbo:load', function () {
     add_btn,       // 右下などにある「+」ボタン
     new_items,     // 「メモ」「フォルダ」の選択肢(li要素2つ)
     or_item,       // 「or」の文字
-    memo_panel,    // #memo_panel (メモ編集パネル)
-    back_btn,      // メモ編集パネルの「＜」戻るボタン
     main_title,    // MIND PALACE的な大きいタイトル文字
     icon_container, // アイコンを並べてる場所(.icon-container)
-    show_panel,
+    show_panel,    // メモの画面(新規作成・閲覧・編集)
     folder_panel
   } = getRefs();
 
@@ -81,10 +79,9 @@ document.addEventListener('turbo:load', function () {
     if (location.pathname !== '/memory') return; // / や /sound にいる時は、リンクでそのまま /memory に移る
 
     e.preventDefault(); // /memory にいる時は、リンクでページを移らずに開閉する
-    if (panel.classList.contains('show') || memo_panel.classList.contains('show')) {
-      // メインパネルかメモ編集パネルのどちらかが開いている状態から閉じる場合
+    if (panel.classList.contains('show')) {
+      // メインパネルが開いている状態から閉じる場合
       panel.classList.remove('show');
-      memo_panel.classList.remove('show');
       header_title.classList.remove('show');
       main_title.classList.remove('hide');
       show_panel.classList.remove('show');
@@ -125,21 +122,16 @@ document.addEventListener('turbo:load', function () {
   // ============================================================
   // ◆ ⑥ 「メモ」を選んだ時の処理
   // ============================================================
-  // メモ編集パネルを表示する
+  // メモの画面を、新規作成(空の入力欄)で開く。null は「メインパネル直下に作る」の意味(show_panel.js の window.openNewMemo)
+  // (前に別のフォルダで作りかけてやめた時の、フォルダの指定が残らないように、ここで null を渡し直す)
   memo_btn.addEventListener('click', function () {
-    window.currentColumnFolderId = null; // ▲▲▲ もし別のフォルダでメモを作成するのをやっぱりやめる時、ここでリセットしないと、次に作るメモがそのまま前のフォルダの中に保存されてしまう
-    memo_panel.classList.add('show');
-    panel.classList.remove('show');
+    window.openNewMemo(null);
     closeAddMenu();
   });
 
   // ============================================================
-  // ◆ ⑦ 「＜」で一覧パネルに戻る処理
+  // ◆ ⑦ 「＜」で一覧パネルに戻る処理 → メモの画面を1枚にまとめたので不要になった(閉じるのはメモの画面の「閉じる」ボタン)
   // ============================================================
-  back_btn.addEventListener('click', function () {
-    memo_panel.classList.remove('show');
-    panel.classList.add('show');
-  });
 
 
   // ============================================================
