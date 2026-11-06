@@ -3,7 +3,8 @@
 //
 // 目次
 // A. 必要なDOM要素をまとめて取得
-// B. 保存ボタンが押された時の処理本体(Railsへの保存リクエスト〜画面への反映まで)
+// B. Enterキーで入力内容が消えないようにする処理
+// C. 保存ボタンが押された時の処理本体(Railsへの保存リクエスト〜画面への反映まで)
 import { getRefs } from "window"
 
 document.addEventListener('turbo:load', function () {
@@ -22,7 +23,24 @@ document.addEventListener('turbo:load', function () {
   } = getRefs();
 
   // ============================================================
-  // ◆ B. 保存ボタンが押された時の処理本体（ここだけ async は使用していない。）
+  // ◆ B. Enterキーで入力内容が消えないようにする処理
+  // ============================================================
+  // 入力欄は <form> の中にあるので、Enterを押すとブラウザがフォームを送信して、ページを読み込み直してしまう(入力内容が消える)。
+  // 保存は C の保存ボタンでJSから行うので、フォームとしての送信はいらない。送信されそうになったら止める
+  title_input.form.addEventListener('submit', function (e) {
+    e.preventDefault();
+  });
+
+  // タイトル欄でEnterを押したら、保存はせずに、入力を終える(カーソルを外す)だけにする。続きは本文欄をクリックして書く
+  title_input.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    if (e.isComposing) return; // 日本語の変換を確定するEnterでは、入力を終えない(まだタイトルを打っている途中のため)
+    e.preventDefault();
+    title_input.blur();
+  });
+
+  // ============================================================
+  // ◆ C. 保存ボタンが押された時の処理本体（ここだけ async は使用していない。）
   // ============================================================
   // 保存ボタンを押したら、Railsにメモを保存しに行く
 save_btn.addEventListener('click', function () {
