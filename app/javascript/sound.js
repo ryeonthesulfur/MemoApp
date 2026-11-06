@@ -21,6 +21,37 @@ document.addEventListener('keydown', function (e) {
 // ============================================================
 let webampLoading = false; // 初めて表示している途中に、もう一度「音」を開いた時、Webampを2つ作らないための目印
 
+// Webampのウィンドウを、入れ物いっぱいの大きさで並べるための配置を作る
+// 左の列に「本体・イコライザー・プレイリスト」を縦に積み、右に「MILKDROP(映像)」を置く。
+// Webampのウィンドウは自由な大きさにはできず、決まった刻み(横25px・縦29px)でしか伸ばせない。
+// なので、入れ物に収まる一番大きい刻みの数を計算し、余った分は上下左右に均等に振って、真ん中に寄せる
+function makeWindowLayout(container) {
+  const W = 275, H = 116;        // 各ウィンドウの基本の大きさ(幅・高さ)
+  const STEP_W = 25, STEP_H = 29; // 伸ばす時の1刻みの大きさ
+  const MARGIN = 16;              // 入れ物のふちとの間の余白
+
+  const boxW = container.clientWidth - MARGIN * 2;
+  const boxH = container.clientHeight - MARGIN * 2;
+
+  // 高さ: 本体とイコライザー(2つ分)の下に、プレイリストを伸ばせるだけ伸ばす
+  const extraH = Math.max(0, Math.floor((boxH - H * 3) / STEP_H));
+  const totalH = H * 3 + extraH * STEP_H;
+  // 幅: 左の列(1つ分)の右に、MILKDROPを伸ばせるだけ伸ばす
+  const extraW = Math.max(0, Math.floor((boxW - W * 2) / STEP_W));
+  const totalW = W * 2 + extraW * STEP_W;
+
+  const left = Math.max(0, Math.round((container.clientWidth - totalW) / 2));
+  const top = Math.max(0, Math.round((container.clientHeight - totalH) / 2));
+
+  return {
+    main:      { position: { left, top } },
+    equalizer: { position: { left, top: top + H } },
+    playlist:  { position: { left, top: top + H * 2 }, size: { extraWidth: 0, extraHeight: extraH } },
+    // MILKDROPの高さは、左の列の合計(本体+イコライザー+プレイリスト)とそろえる
+    milkdrop:  { position: { left: left + W, top }, size: { extraWidth: extraW, extraHeight: (totalH - H) / STEP_H } },
+  };
+}
+
 // 「音」のページに初めて来た時に、Webampを作って表示する
 // ウィンドウは、レイアウトにある入れ物(#webamp_container、data-turbo-permanent)の中に表示する。
 // この入れ物はページを移っても取り替えられないので、2回目以降は何もしなくても、ウィンドウが元の状態のまま出る
@@ -39,8 +70,10 @@ async function showWebamp() {
   }
 
   // プレイリストは最初は空。曲はウィンドウにドラッグ&ドロップして追加する
-  // 設定が無くても {} を渡す(何も渡さないと、Webampの中で設定を読もうとしてエラーになるため)
-  window.myWebamp = new Webamp({});
+  // 設定は必ず渡す(何も渡さないと、Webampの中で設定を読もうとしてエラーになるため)
+  window.myWebamp = new Webamp({
+    windowLayout: makeWindowLayout(document.getElementById('webamp_container')),
+  });
 
   // renderInto は、渡した入れ物を「ウィンドウを動かせる範囲」にして、その中央にウィンドウを並べる。
   // renderWhenReady だと、その時の<body>が範囲になる。<body>はページを移るたびにTurboが取り替えるので、
