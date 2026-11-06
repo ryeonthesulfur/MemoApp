@@ -54,40 +54,30 @@
 </div>
 
 
-<%# 新規メモの作成・編集用パネル(タイトル・本文の入力欄)。top.js・folder_columns.jsから開かれ、memo_saving.jsが保存を担当 %>
-<div id="memo_panel">
-  <form class="panel-form">
-    <div class="form_group">
-      <ul class="mamo_panel_head">
-        <label for="title" class="title_label">タイトル</label>
-        <li class="back_btn">＜</li>
-      </ul>
-      <input type="text" id="title" name="title" placeholder="タイトル" class="input_form">
-    </div>
-    <div class="form_group_2">
-      <label for="body" class="body_label">本文</label>
-      <textarea id="body" name="body" placeholder="思考する" class="textarea_form"></textarea>
-      <div class="form_group_3">
-        <button type="button" id="save_btn">保存</button>
-      </div>
-    </div>
-  </form>
-</div>
-
-
-<%# 既存のメモをクリックした時に開く、詳細表示・編集パネル(memo_panelとは別物、show_panel.jsが担当) %>
+<%# メモの画面(新規作成・閲覧・編集をこの1枚で行う)。show_panel.jsが担当、新規保存だけ memo_saving.js
+    外側(#main_show_panel)は画面全体を薄暗くぼかす幕、内側(.show_panel)が真ん中に出るメモの画面。
+    「編集の状態」の時だけ、#main_show_panel に editing クラスが付き、表示用の文字の代わりに入力欄が見える %>
 <div id="main_show_panel">
   <div class="show_panel">
     <div class="buttons_header">
       <div class="date"></div>
+      <%# タイトルは日付の右隣に置く。閲覧の状態では文字(.show_title)、編集の状態では入力欄(#title)が、同じ位置に出る
+          入力欄は form の外にあるが、form="memo_form" で下のフォームの一部として扱わせる(Enterで送信されないようにする処理を、本文欄と同じフォームでまとめて効かせるため) %>
+      <div class="show_title"></div>
+      <input type="text" id="title" name="title" placeholder="タイトル" class="input_form" form="memo_form">
       <div class="button_group">
         <div class="edit_button">編集</div>
+        <button type="button" id="save_btn">保存</button>
         <div class="close_button">閉じる</div>
       </div>
     </div>
+    <%# 閲覧の状態で見える、本文の表示 %>
     <div class="show_content">
-      <div class="show_title"></div>
       <div class="body"></div>
     </div>
+    <%# 編集の状態で見える、本文の入力欄 %>
+    <form class="panel-form" id="memo_form">
+      <textarea id="body" name="body" placeholder="思考する" class="textarea_form"></textarea>
+    </form>
   </div>
 </div>
