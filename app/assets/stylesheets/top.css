@@ -188,10 +188,13 @@ body:not(:has(#sound_title)) #webamp_container {
 /* ビジュアライザーを開く、ビー玉のアイコン(_soundパーシャルにある) */
 #marble_icon {
     position: absolute; /* .main_content を基準に宙に浮かせる */
-    top: 0.78vw; /* 15px。見出し「音楽」の右隣に置く(Webampのウィンドウと重ならない、ヘッダーの高さ) */
+    --marble-size: clamp(48px, 4.17vw, 96px); /* 80px。画面が狭くても小さくなりすぎないようにする */
+    /* 見出し「音楽」の右隣に、文字と高さをそろえて置く(Webampのウィンドウと重ならない、ヘッダーの高さ)。
+       「音楽」の文字の中心は、高さ10%の枠から上の余白(0.78vw)を除いた部分の真ん中 = 5% + 0.39vw。そこからアイコンの半分だけ上げる */
+    top: calc(5% + 0.39vw - var(--marble-size) / 2);
     left: 11vw;
-    width: clamp(48px, 4.17vw, 96px); /* 80px。画面が狭くても小さくなりすぎないようにする */
-    height: clamp(48px, 4.17vw, 96px);
+    width: var(--marble-size);
+    height: var(--marble-size);
     padding: 0; /* button の標準の余白を消す */
     border: none; /* button の標準の枠線を消す */
     background: none; /* button の標準の背景を消す */

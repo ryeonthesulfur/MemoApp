@@ -32,6 +32,12 @@
     background: rgba(20, 30, 80, 0.4);
   }
   .drop.on { display: grid; }
+  /* 開いた時に、暗闇からふわっと浮かび上がらせるための幕。最初は全体を覆い、3秒かけて透明になる */
+  .fade {
+    position: fixed; inset: 0; background: #020308; pointer-events: none;
+    transition: opacity 3s ease;
+  }
+  .fade.out { opacity: 0; }
 </style>
 </head>
 <body>
@@ -46,6 +52,7 @@
   <div class="row status" id="status">ファイルを画面にドラッグしても流せます ・ H キーでこの枠を隠す</div>
 </div>
 <div class="drop" id="drop">ここに離すと再生します</div>
+<div class="fade" id="fade"></div>
 
 <script type="importmap">
 { "imports": {
@@ -455,6 +462,9 @@ function tick() {
   requestAnimationFrame(tick);
 }
 tick();
+
+// 最初の1枚を描き終えてから、幕を上げる(描く前に上げると、何も無い画面が一瞬見えてしまうため)
+requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById('fade').classList.add('out')));
 
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
