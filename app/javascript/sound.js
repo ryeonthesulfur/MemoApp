@@ -98,15 +98,18 @@ document.addEventListener('turbo:load', function () {
   const main_title = document.querySelector('.main_title'); // 右下のMIND PALACE(レイアウトにある)
   const webamp_container = document.getElementById('webamp_container'); // Webampのウィンドウの入れ物(レイアウトにある)
   const sound_link = document.querySelector('.item-boxes a[href="/sound"]'); // サイドバーの「音」
+  const marble_icon = document.getElementById('marble_icon'); // ビジュアライザーを開くビー玉のアイコン(_soundパーシャルにある)
 
   function openSound() {
     sound_title.classList.add('show');
+    marble_icon.classList.add('show');
     main_title.classList.add('hide');
     webamp_container.classList.remove('hide');
   }
 
   function closeSound() {
     sound_title.classList.remove('show');
+    marble_icon.classList.remove('show');
     main_title.classList.remove('hide');
     webamp_container.classList.add('hide');
   }
