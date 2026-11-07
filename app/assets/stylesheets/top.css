@@ -269,10 +269,19 @@ body:not(:has(#sound_title)) #webamp_container {
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
-/* メインパネルとフォルダパネルの縁。サイドバーと同じように、縁から白い光をにじませて、背景との境目をぼかす */
+/* メインパネルとフォルダパネルの縁。縁に近づくほどパネルが透けていくようにして、背景との境目をぼかす。
+   横向き(左右の縁)と縦向き(上下の縁)の2枚の「透け具合の型(mask)」を重ね、両方が濃い所だけを見せる */
 #main_panel,
 .folder_column .show_panel {
-    box-shadow: 0 0 1.04vw rgba(255, 255, 255, 0.3); /* 20px。サイドバー(.side_bar)の光と同じ強さ */
+    --edge-fade: 0.52vw; /* 10px。縁から、どれだけの幅で透けていくか(パネルの中のボタンにはかからない幅) */
+    -webkit-mask-image:
+        linear-gradient(to right, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent),
+        linear-gradient(to bottom, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+        linear-gradient(to right, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent),
+        linear-gradient(to bottom, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent);
+    mask-composite: intersect;
 }
 
 #main_panel_inner {
