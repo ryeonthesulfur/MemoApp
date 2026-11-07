@@ -267,11 +267,22 @@ document.addEventListener('turbo:load', function () {
             const orItem = column.querySelector('.or_item');
 
             // 閉じるボタン
+            // このカラムと、その右にあるカラムを全部、フワッと消してから取り除く(開く時と同じ0.6秒の演出にするため)
             closeButton.addEventListener('click', function () {
-                while (column.nextElementSibling) {
-                    column.nextElementSibling.remove();
+                const closingColumns = [column];
+                let next = column.nextElementSibling;
+                while (next) {
+                    closingColumns.push(next);
+                    next = next.nextElementSibling;
                 }
-                column.remove();
+
+                // show を外すと、folder_panel.css の transition で0.6秒かけて透明になる
+                closingColumns.forEach(c => c.classList.remove('show'));
+
+                // すぐ remove() すると、透明になる途中が見えずにパッと消えるので、透明になり終わる0.6秒後に取り除く
+                setTimeout(function () {
+                    closingColumns.forEach(c => c.remove());
+                }, 600);
             });
 
             // 追加ボタン
