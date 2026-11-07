@@ -13,4 +13,5 @@ pin "show_panel"
 pin "folder_saving"
 pin "folder_columns"
 pin "sound"
+pin "marble"
 pin "webamp", preload: false # 約2MBあるので、全ページで先読みせず、「音」を開いた時だけ sound.js から読み込む

@@ -185,6 +185,38 @@ body:not(:has(#sound_title)) #webamp_container {
     display: none;
 }
 
+/* ビジュアライザーを開く、ビー玉のアイコン(_soundパーシャルにある) */
+#marble_icon {
+    position: absolute; /* .main_content を基準に宙に浮かせる */
+    top: 0.78vw; /* 15px。見出し「音楽」の右隣に置く(Webampのウィンドウと重ならない、ヘッダーの高さ) */
+    left: 11vw;
+    width: clamp(48px, 4.17vw, 96px); /* 80px。画面が狭くても小さくなりすぎないようにする */
+    height: clamp(48px, 4.17vw, 96px);
+    padding: 0; /* button の標準の余白を消す */
+    border: none; /* button の標準の枠線を消す */
+    background: none; /* button の標準の背景を消す */
+    cursor: grab; /* つかんで動かせることを示す */
+    touch-action: none; /* タッチで動かした時に、画面がスクロールしないようにする */
+    z-index: 10; /* Webampのウィンドウより手前に出す */
+    filter: drop-shadow(0 0 0.42vw rgba(110, 140, 255, 0.35)); /* 8px。中の光が、まわりにほんのりにじむ */
+    opacity: 0; /* 初期状態は非表示(「音楽」と一緒にフワッと出す) */
+    transition: opacity 2s ease; /* 「音楽」と同じく、2秒かけて出し入れする */
+}
+
+#marble_icon.show {
+    opacity: 1;
+}
+
+#marble_icon.dragging {
+    cursor: grabbing; /* つかんでいる最中の手の形にする */
+}
+
+#marble_icon canvas {
+    width: 100%;
+    height: 100%;
+    display: block; /* canvas の下にできる、文字の行のすき間を消す */
+}
+
 /* 外部リンクアイコン styles */
 .header_links {
     display: flex; /* アイコンを横に並べる */

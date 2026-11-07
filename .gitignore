@@ -35,3 +35,6 @@
 
 .DS_Store
 
+
+# ビジュアライザーのデモ音(script/make_demo_pad.py で作り直せるので、Git には入れない)
+/script/demo_pad.wav
