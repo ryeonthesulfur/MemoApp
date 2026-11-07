@@ -6,6 +6,11 @@
     transition: opacity 0.6s ease; /* main_panelと同じく、0.6秒かけて出す */
 }
 
+/* カラムの中のパネル。ガラスのような枠縁(top.css の .folder_column .show_panel::before)を、このパネルに合わせて重ねるための基準にする */
+.folder_column .show_panel {
+    position: relative;
+}
+
 /* folder_columns.js が、カラムを画面に入れた後に付ける */
 .folder_column.show {
     opacity: 1; /* 透明度を100%にして完全に見えるようにする */
