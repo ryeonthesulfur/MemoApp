@@ -269,28 +269,10 @@ body:not(:has(#sound_title)) #webamp_container {
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
-/* メインパネルとフォルダパネルの、ガラスのような枠縁。
-   左上と右下が光を受けて白く光り、間は透けていくグラデーションにする。
-   枠線(border)はグラデーションにすると角丸が効かないので、パネルに重ねた1枚の板(::before)にグラデーションを塗り、
-   真ん中をくり抜いて(mask)、縁の部分だけを残している */
-#main_panel::before,
-.folder_column .show_panel::before {
-    content: '';
-    position: absolute;
-    inset: 0; /* パネルにぴったり重ねる */
-    border-radius: inherit; /* パネルと同じ角丸にする */
-    padding: max(1.5px, 0.1vw); /* 2px(画面が狭くても1.5px)。枠縁の太さ(くり抜かずに残す幅)。細すぎるとガラスの光が見えなくなるため、下限を付けている */
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.95) 0%,  /* 左上: 光を受けて、白く光る */
-        rgba(255, 255, 255, 0.25) 30%,
-        rgba(255, 255, 255, 0.05) 55%, /* 真ん中あたり: ほとんど透ける */
-        rgba(255, 255, 255, 0.3) 80%,
-        rgba(255, 255, 255, 0.75) 100%); /* 右下: 反対側も少し光る */
-    /* 内側(content-box)と全体を重ねて、重なった内側だけを消す = 縁だけが残る */
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-    pointer-events: none; /* 枠縁の板が、パネルの中のクリックを邪魔しないようにする */
+/* メインパネルとフォルダパネルの縁。サイドバーと同じように、縁から白い光をにじませて、背景との境目をぼかす */
+#main_panel,
+.folder_column .show_panel {
+    box-shadow: 0 0 1.04vw rgba(255, 255, 255, 0.3); /* 20px。サイドバー(.side_bar)の光と同じ強さ */
 }
 
 #main_panel_inner {
