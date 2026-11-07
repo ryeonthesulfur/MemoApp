@@ -13,6 +13,13 @@
 
     <%= yield :head %>
 
+    <%# 背景をビジュアライザーにしているかを、画面を描く前に決めておく(background.js と同じ判定)。
+        描いた後に決めると、背景画像が一瞬見えてから消えてしまうため %>
+    <script>
+      try { if (localStorage.getItem('background') !== 'image') document.documentElement.classList.add('ambient'); }
+      catch (e) { document.documentElement.classList.add('ambient'); }
+    </script>
+
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
@@ -29,7 +36,10 @@
   </head>
 
   <body>
-  <div class="background" style="background-image: linear-gradient(rgba(146, 146, 146, 0.14), rgba(0,0,0,0.75)), url('<%= asset_path('background_image.jpg') %>');">
+  <%# 背景のビジュアライザーを描く場所(background.js が描く)。ページを移っても取り替えないので、途切れずに動き続ける %>
+  <canvas id="ambient_canvas" data-turbo-permanent aria-hidden="true"></canvas>
+  <%# 背景画像は、CSS(application.css)の側で付けるので、ここでは場所だけ渡す(画像の場所は、Railsでないと決められないため) %>
+  <div class="background" style="--background-image: url('<%= asset_path('background_image.jpg') %>');">
     <div class="content">
       <div class="side_bar">
         <div></div>
@@ -37,6 +47,8 @@
           <li class="item-boxes"><%= link_to "憶", memory_path %></li>
           <li class="item-boxes">時</li>
           <li class="item-boxes"><%= link_to "音", sound_path %></li>
+          <%# 背景を「ビジュアライザー」と「背景画像」で切り替えるボタン(background.js) %>
+          <li class="item-background" title="背景を切り替える"><span class="material-symbols-outlined">wallpaper</span></li>
           <li class="item-close"><span class="material-symbols-outlined">power_settings_new</span></li>
         </ul>
       </div>

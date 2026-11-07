@@ -58,6 +58,26 @@ body {
     text-decoration: none; /* リンクの下線を消す */
 }
 
+/* 背景の切り替えボタン styles(閉じるボタンのすぐ上に置く) */
+.item-background {
+    font-size: 1.72vw; /* 33px */
+    cursor: pointer; /* クリックできることが分かるよう、マウスを指マークにする */
+    transition: color 1s ease; /* hover時の文字色の変化に1秒かける */
+    color: rgba(215, 215, 215, 0.874); /* 通常時の文字色 */
+    margin-top: auto; /* 余った縦スペースを全部自分の上のmarginにする(=閉じるボタンと一緒に、下に寄せる) */
+}
+
+/* 閉じるボタンの上の余白は、切り替えボタンが代わりに持つ(両方に持たせると、余白が半分ずつになって、切り替えボタンが真ん中あたりに浮いてしまうため) */
+.item-background + .item-close {
+    margin-top: 0;
+}
+
+.item-background:hover {
+    color: #ffffff; /* hover時、文字色を白に変える */
+    text-shadow: black 1px 1px 1px; /* 文字にごく薄い縁取りを付けて見やすくする */
+    transition: color 0.5s ease; /* 文字色の変化に0.5秒かける */
+}
+
 /* 閉じるボタン styles */
 .item-close {
     font-size: 1.72vw; /* 33px */
