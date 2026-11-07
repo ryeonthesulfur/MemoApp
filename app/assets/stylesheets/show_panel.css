@@ -41,8 +41,8 @@
 .show_panel {
     width: 100%; /* 親要素(#main_show_panel)の幅いっぱいに広げる */
     height: 100%; /* 親要素の高さいっぱいに広げる */
-    background-color: #d6e6d4e9; /* パネルの背景色 */
-    border-radius: 1.15vw; /* 22px。角を丸める */
+    background-color: #d1d1d1e9; /* パネルの背景色 */
+    border-radius: 1.2vw; /* 22px。角を丸める */
     display: flex; /* ヘッダーと本文を縦に並べる土台 */
     flex-direction: column; /* 縦並びにする */
     overflow: hidden; /* 角丸からはみ出た中身を隠す */

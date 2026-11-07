@@ -256,8 +256,8 @@ body:not(:has(#sound_title)) #webamp_container {
     left: 2%; /* 宙に浮いている要素は left で座標を指定します！ */
     width: 30%; /* パネルの横幅 */
     height: 80%; /* パネルの縦幅 */
-    border-radius: 1.15vw; /* 22px。角を丸める */
-    background-color: #d6e6d4e9; /* パネルの背景色 */
+    /* 角の丸みは、子フォルダのパネルとそろえるため、下の「縁」の指定にまとめている */
+    background-color: #d1d1d1e9; /* パネルの背景色 */
     opacity: 0; /* 初期状態では透明にする */
     transition: all 0.6s ease; /* opacityだけでなく、visibilityの変化にも0.6秒かける（allにする！） */
     visibility: hidden; /* 初期状態では非表示にする */
@@ -269,11 +269,13 @@ body:not(:has(#sound_title)) #webamp_container {
     visibility: visible; /* visibilityもvisibleにして、クリックできるようにする */
 }
 
-/* メインパネルとフォルダパネルの縁。縁に近づくほどパネルが透けていくようにして、背景との境目をぼかす。
+/* メインパネルと子フォルダのパネルの縁。ここを変えると、両方が同じように変わる。
+   縁に近づくほどパネルが透けていくようにして、背景との境目をぼかす。
    横向き(左右の縁)と縦向き(上下の縁)の2枚の「透け具合の型(mask)」を重ね、両方が濃い所だけを見せる */
 #main_panel,
 .folder_column .show_panel {
-    --edge-fade: 1.04vw; /* 20px。縁から、どれだけの幅で透けていくか */
+    border-radius: 0.9vw; /* 17px。角を丸める(子フォルダのパネルは、メモのパネル(show_panel.css の .show_panel)の丸みより、こちらが優先される) */
+    --edge-fade: 0.9vw; /* 17px。縁から、どれだけの幅で透けていくか */
     -webkit-mask-image:
         linear-gradient(to right, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent),
         linear-gradient(to bottom, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent);
