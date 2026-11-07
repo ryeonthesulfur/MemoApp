@@ -47,9 +47,8 @@
           <li class="item-boxes"><%= link_to "憶", memory_path %></li>
           <li class="item-boxes">時</li>
           <li class="item-boxes"><%= link_to "音", sound_path %></li>
-          <%# 背景を「ビジュアライザー」と「背景画像」で切り替えるボタン(background.js) %>
-          <li class="item-background" title="背景を切り替える"><span class="material-symbols-outlined">wallpaper</span></li>
-          <li class="item-close"><span class="material-symbols-outlined">power_settings_new</span></li>
+          <%# 電源ボタン。押すと背景を切り替える(オン: 背景画像 / オフ: ビジュアライザー)。background.js %>
+          <li class="item-close" title="電源"><span class="material-symbols-outlined">power_settings_new</span></li>
         </ul>
       </div>
 

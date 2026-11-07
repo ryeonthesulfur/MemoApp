@@ -14,15 +14,15 @@
     height: 100vh;
 }
 
-/* 背景画像(上に暗い膜を重ねたもの)と、ビジュアライザー用の暗い膜は、それぞれ別の層にして、透明度でふわっと切り替える。
-   (背景画像そのものは、ふわっと切り替えられないため) どちらも画面のすべての後ろ、ビジュアライザーの手前に置く */
+/* 背景画像(上に暗い膜を重ねたもの)と、ビジュアライザー用の暗い膜は、それぞれ別の層にする。
+   背景画像の層だけを、ブラウン管テレビのように縮めたり広げたりして切り替えるため(下の「電源のオン・オフ」)。
+   どちらも画面のすべての後ろ、ビジュアライザーの手前に置く */
 .background::before,
 .background::after {
     content: '';
     position: fixed;
     inset: 0;
     z-index: -1;
-    transition: opacity 2s ease;
 }
 .background::before {
     background-image: linear-gradient(rgba(146, 146, 146, 0.14), rgba(0,0,0,0.75)), var(--background-image);
@@ -34,6 +34,7 @@
     /* ビジュアライザーの上にかける暗い膜。背景画像の時の膜より薄い(元の濃さだと、塔がほとんど見えなくなるため) */
     background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
     opacity: 0;
+    transition: opacity 0.8s ease;
 }
 
 /* ============================================================
@@ -44,7 +45,7 @@ html.ambient {
     background: #020308; /* ビジュアライザーが描き始める前に、白い画面が見えないようにする */
 }
 html.ambient .background::before {
-    opacity: 0; /* 背景画像を、ふわっと消す */
+    opacity: 0; /* 背景画像を消す */
 }
 html.ambient .background::after {
     opacity: 1;
@@ -61,4 +62,45 @@ html.ambient .background::after {
 }
 #ambient_canvas.show {
     opacity: 1;
+}
+
+/* ============================================================
+   ◆ 電源のオン・オフ(ブラウン管テレビの演出)
+   ============================================================ */
+/* 電源ボタンを押した時だけ、<html> に crt-off / crt-on が付く(background.js が付けて、終わったら外す)。
+   ページを開いた時は付かないので、この演出は出ない */
+
+/* オフ: 背景画像が、上下からつぶれて白く光る横線になり、横からも縮んで点になって、消える */
+html.crt-off .background::before {
+    animation: crt-off 0.8s ease-in forwards;
+}
+@keyframes crt-off {
+    0%   { transform: scale(1, 1);       filter: brightness(1);           opacity: 1; }
+    40%  { transform: scale(1, 0.004);   filter: brightness(6) saturate(0); opacity: 1; }
+    75%  { transform: scale(0.004, 0.004); filter: brightness(8) saturate(0); opacity: 1; }
+    100% { transform: scale(0, 0);       filter: brightness(8) saturate(0); opacity: 0; }
+}
+
+/* オン・オフの演出の間は、後ろのビジュアライザーを真っ暗に隠しておく(テレビが点く・消える時のように、まわりは暗いままにするため)。
+   オフの演出が終わって crt-off が外れると、#ambient_canvas の transition(3秒)で、ゆっくり明るくなって見えてくる */
+html.crt-off #ambient_canvas,
+html.crt-on #ambient_canvas {
+    opacity: 0;
+    transition: none;
+}
+/* オンの演出の間は、もう html.ambient が外れているので、暗い色をここでも付けておく(付けないと、まわりが白くなるため) */
+html.crt-on {
+    background: #020308;
+}
+
+/* オン: 真ん中に白い点が灯り、横に伸びて線になり、上下に広がって背景画像になる。最後に、明るさが落ち着く */
+html.crt-on .background::before {
+    animation: crt-on 0.9s ease-out forwards;
+}
+@keyframes crt-on {
+    0%   { transform: scale(0.004, 0.004); filter: brightness(8) saturate(0); opacity: 0; }
+    15%  { transform: scale(0.004, 0.004); filter: brightness(8) saturate(0); opacity: 1; }
+    45%  { transform: scale(1, 0.004);   filter: brightness(6) saturate(0); opacity: 1; }
+    75%  { transform: scale(1, 1);       filter: brightness(1.6);         opacity: 1; }
+    100% { transform: scale(1, 1);       filter: brightness(1);           opacity: 1; }
 }
