@@ -264,7 +264,13 @@ document.addEventListener('turbo:load', function () {
   // ドラッグして離した時にも click は起きるので、その時は開かない(動かしただけでタブが開かないように)
   icon.addEventListener('click', function () {
     if (wasDragged()) return;
-    // noopener: 開いたタブから、こちらのタブを操作できないようにする(別タブで開く時の、安全のための決まり)
-    window.open('/visualizer/', '_blank', 'noopener');
+    // 同じウィンドウの中に、別タブで開く。
+    // window.open の3つ目に 'noopener' などの設定を書くと、ブラウザが「小さな別ウィンドウ(ポップアップ)で開いて」という意味に受け取り、
+    // 別のウィンドウで開いてしまう。そこで、ふつうのリンク(<a>)を作ってクリックしたことにして、ヘッダーのリンクと同じ開き方にする
+    const link = document.createElement('a');
+    link.href = '/visualizer/';
+    link.target = '_blank';
+    link.rel = 'noopener'; // 開いたタブから、こちらのタブを操作できないようにする(別タブで開く時の、安全のための決まり)
+    link.click();
   });
 });
