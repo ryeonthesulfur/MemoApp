@@ -12,7 +12,53 @@
 .background {
     width: 100vw;
     height: 100vh;
+}
+
+/* 背景画像(上に暗い膜を重ねたもの)と、ビジュアライザー用の暗い膜は、それぞれ別の層にして、透明度でふわっと切り替える。
+   (背景画像そのものは、ふわっと切り替えられないため) どちらも画面のすべての後ろ、ビジュアライザーの手前に置く */
+.background::before,
+.background::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    transition: opacity 2s ease;
+}
+.background::before {
+    background-image: linear-gradient(rgba(146, 146, 146, 0.14), rgba(0,0,0,0.75)), var(--background-image);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+.background::after {
+    /* ビジュアライザーの上にかける暗い膜。背景画像の時の膜より薄い(元の濃さだと、塔がほとんど見えなくなるため) */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
+    opacity: 0;
+}
+
+/* ============================================================
+   ◆ 背景のビジュアライザー
+   ============================================================ */
+/* 背景をビジュアライザーにしている間は、<html> に ambient が付く(レイアウトの<head>と background.js が付ける) */
+html.ambient {
+    background: #020308; /* ビジュアライザーが描き始める前に、白い画面が見えないようにする */
+}
+html.ambient .background::before {
+    opacity: 0; /* 背景画像を、ふわっと消す */
+}
+html.ambient .background::after {
+    opacity: 1;
+}
+#ambient_canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: -1; /* 画面のすべての後ろに置く(背景画像の層よりも、さらに後ろ) */
+    opacity: 0;
+    transition: opacity 3s ease; /* 暗闇から、ふわっと浮かび上がらせる */
+}
+#ambient_canvas.show {
+    opacity: 1;
 }
