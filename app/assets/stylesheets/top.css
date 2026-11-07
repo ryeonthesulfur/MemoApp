@@ -273,7 +273,7 @@ body:not(:has(#sound_title)) #webamp_container {
    横向き(左右の縁)と縦向き(上下の縁)の2枚の「透け具合の型(mask)」を重ね、両方が濃い所だけを見せる */
 #main_panel,
 .folder_column .show_panel {
-    --edge-fade: 0.52vw; /* 10px。縁から、どれだけの幅で透けていくか(パネルの中のボタンにはかからない幅) */
+    --edge-fade: 1.04vw; /* 20px。縁から、どれだけの幅で透けていくか */
     -webkit-mask-image:
         linear-gradient(to right, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent),
         linear-gradient(to bottom, transparent, #000 var(--edge-fade), #000 calc(100% - var(--edge-fade)), transparent);
@@ -291,8 +291,8 @@ body:not(:has(#sound_title)) #webamp_container {
 
 .add_menu_wrapper {
     position: absolute; /* 親（パネル）を基準に宙に浮かせる */
-    top: 0.52vw;          /* 10px。パネル上端からの距離 */
-    right: 0.52vw;        /* 10px。パネル右端からの距離 */
+    top: 1.04vw;          /* 20px。パネル上端からの距離(縁の透けていく所にかかって、ボタンが薄くならないようにする) */
+    right: 1.04vw;        /* 20px。パネル右端からの距離(同上) */
     display: flex; /* 追加ボタンとメニューを横に並べる */
     flex-direction: row-reverse; /* 追加ボタンを一番右に、メニューをその左に出す */
     padding: 0; /* 余白なし */
